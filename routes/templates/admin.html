@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Control Center // Shadow</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --text: #e0e0e0;
+            --primary: #00aaff;
+            --accent-green: #00ffaa;
+            --border: rgba(255, 255, 255, 0.1);
+            --container-bg: rgba(16, 18, 27, 0.8);
+            --shadow: rgba(0, 170, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3rem;
+            overflow-x: hidden;
+        }
+
+        /* --- BACKGROUND --- */
+        #grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -3;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 35px 35px;
+            animation: pan-grid 30s linear infinite;
+        }
+
+        @keyframes pan-grid {
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: -35px -35px;
+            }
+        }
+
+        /* --- END OF BACKGROUND --- */
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #aaa;
+            margin-top: 0.5rem;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-green);
+            font-size: 0.9rem;
+            font-family: 'Fira Code', monospace;
+            margin-top: 1rem;
+        }
+
+        .status-indicator .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green);
+            animation: pulse-green 1.5s infinite;
+        }
+
+        @keyframes pulse-green {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* --- Dashboard Grid Layout --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: var(--container-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: relative;
+            overflow: hidden;
+            animation: fade-in-up 0.5s ease-out forwards;
+            animation-delay: calc(var(--card-index) * 100ms);
+            /* Staggered animation */
+            opacity: 0;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-header .icon {
+            flex-shrink: 0;
+            color: var(--primary);
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--text);
+        }
+
+        .card p {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .btn-group {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, var(--primary), #0077b3);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 170, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 170, 255, 0.4);
+        }
+
+        .terminal-box {
+            background-color: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            color: #c9d1d9;
+            font-size: 0.9rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            white-space: pre-wrap;
+        }
+
+        .terminal-box .cursor {
+            display: inline-block;
+            width: 9px;
+            height: 1rem;
+            background: var(--accent-green);
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                background: transparent
+            }
+        }
+
+        footer {
+            margin-top: 3rem;
+            padding: 1rem;
+            color: #888;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="grid-overlay"></div>
+
+    <header class="header">
+        <h1>Admin Control Center</h1>
+        <p class="subtitle">Welcome, Shadow ⚔️</p>
+        <div class="status-indicator">
+            <div class="dot"></div> SYSTEM ONLINE
+        </div>
+    </header>
+
+    <main class="dashboard-grid">
+        <div class="card" style="--card-index: 1;">
+            <div class="card-header">
+                <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    </svg></div>
+                <h3>Bot Status</h3>
+            </div>
+            <p>All core systems are operational. No intrusions detected.</p>
+            <div class="terminal-box">
+                <span id="terminal-code"></span><span class="cursor"></span>
+            </div>
+        </div>
+
+        <div class="card" style="--card-index: 2;">
+            <div class="card-header">
+                <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                    </svg></div>
+                <h3>Files & Logs</h3>
+            </div>
+            <p>Access server directories, application logs, and runtime output.</p>
+            <div class="btn-group">
+                <a class="btn" href="/files">Open File Manager</a>
+            </div>
+        </div>
+
+        <div class="card" style="--card-index: 3;">
+            <div class="card-header">
+                <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.44,0.17-0.48,0.41L9.2,5.59C8.6,5.82,8.08,6.14,7.58,6.52L5.19,5.56C4.97,5.49,4.71,5.56,4.6,5.78L2.68,9.1 c-0.11,0.2-0.06,0.47,0.12,0.61l2.03,1.58C4.78,11.66,4.76,11.97,4.76,12.28c0,0.32,0.02,0.63,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.44,2.77 c0.04,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.48,0.41l0.44-2.77c0.6-0.23,1.12-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0.01,0.59-0.22l1.92-3.32c0.11-0.2,0.06-0.47-0.12-0.61L19.14,12.94z" />
+                        <circle cx="12" cy="12" r="3" />
+                    </svg></div>
+                <h3>Advanced Controls</h3>
+            </div>
+            <p>Execute privileged commands like restarting services or deploying updates.</p>
+            <div class="btn-group">
+                <a class="btn" href="/admin/restart">🔁 Restart Bot</a>
+                <a class="btn" href="/admin/deploy">🚀 Deploy Updates</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        © 2025 Pikachu Inc. // Authorized access only. Violators will be traced ⚠️
+    </footer>
+
+    <script>
+        // --- DYNAMIC TERMINAL TYPER ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const terminalCodeElement = document.getElementById('terminal-code');
+            if (terminalCodeElement) {
+                const lines = [{
+                        text: "> systemctl ping bot_core",
+                        color: "#aaa"
+                    },
+                    {
+                        text: "  ✅ Bot Online",
+                        color: "#00ffaa"
+                    },
+                    {
+                        text: "> check uptime",
+                        color: "#aaa"
+                    },
+                    {
+                        text: "  ✅ Uptime: 4 days, 6 hours",
+                        color: "#e0e0e0"
+                    },
+                    {
+                        text: "> check memory",
+                        color: "#aaa"
+                    },
+                    {
+                        text: "  ✅ Memory Usage: 128.4 MB",
+                        color: "#e0e0e0"
+                    },
+                    {
+                        text: "> status",
+                        color: "#aaa"
+                    },
+                    {
+                        text: "  ✅ All systems nominal.",
+                        color: "#00ffaa"
+                    }
+                ];
+
+                let lineIndex = 0;
+                let charIndex = 0;
+
+                function type() {
+                    if (lineIndex >= lines.length) return;
+
+                    const currentLine = lines[lineIndex];
+                    const lineText = currentLine.text;
+
+                    if (charIndex < lineText.length) {
+                        let char = lineText.charAt(charIndex);
+                        let span = document.createElement('span');
+                        span.style.color = currentLine.color;
+                        span.textContent = char;
+                        terminalCodeElement.appendChild(span);
+                        charIndex++;
+                        setTimeout(type, 25); // Typing speed
+                    } else {
+                        terminalCodeElement.appendChild(document.createElement('br'));
+                        charIndex = 0;
+                        lineIndex++;
+                        const delay = 150; // Pause between lines
+                        setTimeout(type, delay);
+                    }
+                }
+                type();
+            }
+        });
+    </script>
+</body>
+
+</html>

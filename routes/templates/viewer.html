@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Viewing: {{ filename }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- PrismJS for syntax highlighting -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css"
+    rel="stylesheet"
+    id="prism-theme"
+  />
+  <link
+    href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.css"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --text: #e0e0e0;
+      --primary: #00aaff;
+      --accent: #00ffaa;
+      --border: rgba(255, 255, 255, 0.1);
+      --container-bg: rgba(26, 26, 26, 0.6);
+      --code-bg: #0d1117;
+      --header-bg: rgba(26, 26, 26, 0.8);
+      --shadow: rgba(0, 170, 255, 0.1);
+      --transition-speed: 0.3s;
+    }
+
+    body.light-mode {
+      --bg: #f5f5f5;
+      --text: #333;
+      --primary: #007bff;
+      --accent: #28a745;
+      --border: rgba(0, 0, 0, 0.1);
+      --container-bg: rgba(255, 255, 255, 0.7);
+      --code-bg: #f8f9fa;
+      --header-bg: rgba(255, 255, 255, 0.85);
+      --shadow: rgba(0, 123, 255, 0.1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0; padding: 0; min-height: 100vh;
+      font-family: 'Inter', sans-serif; color: var(--text);
+      overflow: hidden; display: flex; justify-content: center; align-items: center;
+      background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+      transition: background var(--transition-speed), color var(--transition-speed);
+    }
+
+    .container {
+      display: flex; flex-direction: column;
+      width: 100vw; height: 100vh;
+      background: var(--container-bg);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      overflow: hidden;
+    }
+
+    .code-viewer { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    .page-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 1.5rem; background: var(--header-bg); border-bottom: 1px solid var(--border);
+      user-select: none; box-shadow: 0 4px 12px var(--shadow); flex-shrink: 0; flex-wrap: wrap; gap: 1rem;
+    }
+
+    h2 { font-weight: 600; font-size: 1.5rem; display: flex; align-items: center; gap: 0.75rem; margin: 0; }
+    .header-buttons { display: flex; gap: 0.75rem; }
+
+    .action-link, .action-button {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.6rem 1.2rem; font-weight: 600; color: white;
+      border-radius: 12px; text-decoration: none;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer; user-select: none; border: none; font-size: 0.9rem;
+    }
+    
+    .action-button.browse { background: linear-gradient(45deg, #3D7EAA, #ffe47a); }
+    .action-link.edit { background: linear-gradient(45deg, #6a82fb, #fc5c7d); }
+    .theme-switcher { background: linear-gradient(45deg, #8a2be2, #4169e1); }
+    .action-link:hover, .action-link:focus, .action-button:hover, .action-button:focus {
+      outline: none; transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .content-container {
+      flex-grow: 1; display: flex; flex-direction: column; margin: 1rem;
+      border-radius: 12px; overflow: hidden; border: 1px solid var(--border);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .content-header {
+      background: var(--header-bg); padding: 0.75rem 1.25rem;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid var(--border); user-select: none; flex-shrink: 0;
+    }
+
+    .filename { font-family: 'Fira Code', monospace; color: var(--text); opacity: 0.7; font-weight: 500; }
+    .btn-group { display: flex; gap: 0.75rem; }
+
+    .copy-btn, .download-btn {
+      background: rgba(255, 255, 255, 0.1); color: var(--text); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.5rem 0.75rem; cursor: pointer; transition: background-color 0.2s ease;
+    }
+    .copy-btn:hover, .download-btn:hover { background: rgba(255, 255, 255, 0.2); color: var(--accent); }
+
+    .content-area {
+      overflow: auto; flex-grow: 1; background: var(--code-bg);
+      font-family: 'Fira Code', monospace;
+    }
+
+    .content-area img { max-width: 100%; height: auto; display: block; margin: auto; padding: 1rem; }
+
+    .db-table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; }
+    .db-table th, .db-table td { padding: 0.75rem; text-align: left; border: 1px solid var(--border); }
+    .db-table thead { background-color: rgba(255, 255, 255, 0.05); }
+
+    pre {
+      margin: 0; padding-left: 1rem !important;
+      font-size: 1rem; line-height: 1.5;
+    }
+    .line-numbers .line-numbers-rows { border-right: 1px solid var(--border) !important; opacity: 0.5; }
+
+    .file-modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
+      display: none; align-items: center; justify-content: center; z-index: 1000;
+    }
+    .file-modal.show { display: flex; }
+
+    .file-modal-content {
+      background: var(--container-bg); border-radius: 16px; border: 1px solid var(--border);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); width: 90vw; max-width: 500px;
+      height: 80vh; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .file-modal-header {
+      padding: 1rem; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .file-modal-header h3 { margin: 0; font-size: 1.2rem; }
+    #file-filter {
+      width: 100%; padding: 0.5rem 0.75rem; background-color: var(--code-bg);
+      border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif;
+    }
+    .close-modal-btn { background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; opacity: 0.7; transition: opacity 0.2s; }
+    .close-modal-btn:hover { opacity: 1; }
+
+    .file-tree-container { flex-grow: 1; overflow-y: auto; padding: 0.5rem 0; }
+    .file-tree { padding: 0; margin: 0; list-style-type: none; }
+    .file-tree-item {
+      padding: 0.6rem 1.25rem; cursor: pointer; user-select: none;
+      transition: background-color 0.2s ease; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; display: flex;
+      align-items: center; gap: 0.5rem; font-family: 'Fira Code', monospace; font-size: 0.9rem;
+    }
+    .file-tree-item.file:hover { background-color: rgba(0, 170, 255, 0.2); }
+    .folder > .folder-name { display: block; width: 100%; }
+    .folder > .folder-name::before { content: '▸'; margin-right: 0.5rem; display: inline-block; transition: transform 0.2s ease; }
+    .folder.open > .folder-name::before { transform: rotate(90deg); }
+    .file::before { content: '📄'; margin-right: 0.5rem; opacity: 0.8; }
+    .nested { display: none; padding-left: 1rem; list-style-type: none; }
+    .open > .nested { display: block; }
+    
+    @media (min-width: 768px) {
+      body { padding: 1rem; }
+      .container { border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+      h2 { font-size: 1.75rem; }
+      .action-link, .action-button { padding: 0.75rem 1.5rem; font-size: 1rem; }
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-clike.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-css.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
+
+  <script>
+    // --- Core Functions ---
+    function getFileType(filename) {
+        const extension = (filename.split('.').pop() || '').toLowerCase();
+        if (['png', 'jpg', 'jpeg', 'gif', 'bmp', 'svg', 'webp'].includes(extension)) {
+            return 'image';
+        }
+        if (extension === 'db') {
+            return 'database';
+        }
+        // MODIFICATION: Add more language mappings as needed
+        const langMap = {'py': 'python', 'js': 'javascript', 'css': 'css', 'html': 'markup'};
+        return langMap[extension] || 'code';
+    }
+
+    function copyToClipboard() {
+      const contentArea = document.getElementById('content-area');
+      const fileType = getFileType(document.querySelector('.filename').textContent);
+      if (fileType !== 'image') {
+        navigator.clipboard.writeText(contentArea.innerText).then(() => alert('Copied to clipboard!'));
+      }
+    }
+
+    function downloadFile() {
+      const filename = document.querySelector('.filename').textContent;
+      const fileType = getFileType(filename);
+
+      if (fileType === 'image') {
+        // For images, the backend should provide a direct download link.
+        // We assume this link is the same as the viewing URL for raw files.
+        const a = document.createElement('a');
+        a.href = `/raw_file/${filename}`; // Backend needs to handle this route
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        const content = document.getElementById('content-area').innerText;
+        const blob = new Blob([content], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    }
+
+    function toggleTheme() {
+      const isLight = document.body.classList.toggle('light-mode');
+      const themeLink = document.getElementById('prism-theme');
+      const prismTheme = isLight 
+        ? 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css'
+        : 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css';
+      themeLink.setAttribute('href', prismTheme);
+    }
+    
+    // --- Dynamic Content Rendering ---
+    function renderDbContent(data, container) {
+      let html = '';
+      data.forEach(table => {
+        html += `<h3>Table: ${table.name}</h3>`;
+        if (table.rows.length === 0) {
+          html += '<p>This table is empty.</p>';
+          return; // Changed back to return for forEach callback
+        }
+        html += '<table class="db-table"><thead><tr>';
+        table.columns.forEach(col => html += `<th>${col}</th>`);
+        html += '</tr></thead><tbody>';
+        table.rows.forEach(row => {
+          html += '<tr>';
+          // MODIFICATION: Changed || '' to ?? '' to display 0 values
+          table.columns.forEach(col => html += `<td>${row[col] ?? ''}</td>`); 
+          html += '</tr>';
+        });
+        html += '</tbody></table>';
+      });
+      container.innerHTML = html;
+    }
+
+    function renderContent(filename, content) {
+        const contentArea = document.getElementById('content-area');
+        const fileType = getFileType(filename);
+
+        // Clear previous content and classes
+        contentArea.innerHTML = '';
+        contentArea.className = 'content-area';
+
+        if (fileType === 'image') {
+            contentArea.innerHTML = `<img src="/raw_file/${filename}" alt="${filename}">`;
+        } else if (fileType === 'database') {
+            try {
+                const dbData = JSON.parse(content);
+                renderDbContent(dbData, contentArea);
+            } catch (e) {
+                contentArea.innerHTML = `<pre>Error parsing database content: ${e.message}</pre>`;
+            }
+        } else {
+            // It's a code or text file
+            contentArea.classList.add('line-numbers');
+            const language = getFileType(filename) === 'code' ? 'clike' : getFileType(filename);
+            contentArea.innerHTML = `<pre><code id="code-content" class="language-${language}">${content.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
+            Prism.highlightAllUnder(contentArea);
+        }
+    }
+
+    // --- Dynamic File Tree Generation ---
+    function createFileTree(parentElement, files, basePath = '') {
+      files.forEach(file => {
+        const item = document.createElement('li');
+        const currentPath = basePath ? `${basePath}/${file.name}` : file.name;
+
+        if (file.type === 'folder') {
+          item.classList.add('file-tree-item', 'folder');
+          item.innerHTML = `<span class="folder-name">${file.name}</span>`;
+          
+          const nestedList = document.createElement('ul');
+          nestedList.classList.add('nested');
+          if (file.children) {
+            createFileTree(nestedList, file.children, currentPath);
+          }
+          item.appendChild(nestedList);
+
+        } else {
+          item.classList.add('file-tree-item', 'file');
+          item.textContent = file.name;
+          item.dataset.filepath = currentPath;
+        }
+        parentElement.appendChild(item);
+      });
+    }
+
+    // --- Event Listeners Setup ---
+    document.addEventListener('DOMContentLoaded', () => {
+      const fileTreeRoot = document.getElementById('file-tree');
+      const fileModal = document.getElementById('file-modal');
+      const browseBtn = document.getElementById('browse-btn');
+      const closeModalBtn = document.getElementById('close-modal-btn');
+      
+      const showModal = () => fileModal.classList.add('show');
+      const hideModal = () => fileModal.classList.remove('show');
+
+      browseBtn.addEventListener('click', showModal);
+      closeModalBtn.addEventListener('click', hideModal);
+      fileModal.addEventListener('click', e => { if (e.target === fileModal) hideModal(); });
+      
+      fetch('/api/files')
+        .then(response => response.json())
+        .then(fileSystem => {
+          createFileTree(fileTreeRoot, fileSystem);
+          
+          fileTreeRoot.addEventListener('click', (e) => {
+            const target = e.target.closest('.file-tree-item');
+            if (!target) return;
+
+            if (target.classList.contains('folder')) {
+              target.classList.toggle('open');
+            }
+
+            if (target.classList.contains('file')) {
+              const filepath = target.dataset.filepath;
+              window.location.href = `/view/${filepath}`;
+            }
+          });
+        })
+        .catch(error => console.error('Error fetching file tree:', error));
+        
+      // MODIFICATION: Render initial content based on file type
+      const initialFilename = document.querySelector('.filename').textContent;
+      const initialContent = {{ content|tojson }};
+ // Safely get content from template
+      renderContent(initialFilename, initialContent);
+
+      const fileFilter = document.getElementById('file-filter');
+      fileFilter.addEventListener('keyup', () => {
+        const filter = fileFilter.value.toLowerCase();
+        const fileItems = fileTreeRoot.querySelectorAll('li.file-tree-item');
+        fileItems.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            item.style.display = text.includes(filter) ? 'flex' : 'none';
+        });
+      });
+    });
+  </script>
+  
+</head>
+<body class="dark-mode">
+
+  <!-- File List Modal -->
+  <div class="file-modal" id="file-modal" role="dialog" aria-modal="true">
+    <div class="file-modal-content">
+        <header class="file-modal-header">
+            <h3>Browse Files</h3>
+            <button class="close-modal-btn" id="close-modal-btn" aria-label="Close file browser">×</button>
+        </header>
+        <div style="padding: 0 1rem 1rem;">
+          <input type="text" id="file-filter" placeholder="Filter files...">
+        </div>
+        <div class="file-tree-container">
+          <ul class="file-tree" id="file-tree">
+            <!-- File list will be dynamically inserted here by JavaScript -->
+          </ul>
+        </div>
+    </div>
+  </div>
+
+  <main class="container" role="main" aria-label="File viewer">
+    <section class="code-viewer">
+      <header class="page-header">
+        <h2>
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Viewing File
+        </h2>
+        <div class="header-buttons">
+          <button class="action-button browse" id="browse-btn">Browse</button>
+          <a class="action-link edit" href="/edit/{{ filename }}" role="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            Edit
+          </a>
+          <button class="action-link theme-switcher" onclick="toggleTheme()">Toggle Theme</button>
+        </div>
+      </header>
+
+      <article class="content-container" aria-label="File content">
+        <header class="content-header">
+          <span class="filename">{{ filename }}</span>
+          <div class="btn-group">
+            <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
+            <button class="download-btn" onclick="downloadFile()">Download</button>
+          </div>
+        </header>
+        <div id="content-area">
+          <!-- Content will be dynamically rendered here -->
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

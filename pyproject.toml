@@ -1,0 +1,58 @@
+[project]
+name = "Pikachu"
+version = "2.0.1"
+description = "A telegram bot project for RUET CSE SECTION C"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Shadow_mist", email="shadow_mist0@proton.me"},
+    { name = "Bitto Shaha" , email="example@gmail.com"}
+]
+maintainers = [
+    {name = "shadow_mist" , email = "shadow_mist0@proton.me"},
+    {name = "RUET_CSE_SEC_C" , email = "ruetcse24@gmail.com"}
+]
+keywords = ["Telegram", "bot", "automation", "ai", "ruet", "cse", "section-c"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: Linux"
+]
+dependencies = [
+    "setuptools",
+    "flask>=3.1.1",
+    "requests>=2.28.1",
+    "python-telegram-bot[webhooks]>=20.8",
+    "google-genai>=1.24.0",
+    "telegram>=0.0.1",
+    "pyrebase4>=4.5.0",
+    "gunicorn>=23.0.0",
+    "cryptography",
+    "pillow",
+    "pymongo",
+    "fpdf2",
+    "geopy",
+    "pytz",
+    "flask-limiter",
+    "flask-login",
+    "werkzeug",
+    "httpx",
+    "aiosqlite",
+    "fastapi",
+    "uvicorn",
+    "aiofiles",
+    "jinja2",
+    "python-multipart",
+    "slowapi",
+    "motor"
+]
+
+[project.urls]
+"Repository" = "https://github.com/shadow_mist0/pikachu"
+"Homepage" = "https://ruetcse24.vercel.app/"
+
+[project.scripts]
+bot-start = "Main.bot:main"
+
+[tool.setuptools]
+packages = ["Main"]

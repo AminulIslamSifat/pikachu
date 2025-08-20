@@ -1,0 +1,80 @@
+--- Top 100 Functions by Cumulative Time ---Sun Aug 17 23:50:39 2025    /media/sifat/hdd/pikachu/Logs/profile.stats
+
+         167237 function calls (161617 primitive calls) in 36.872 seconds
+
+   Ordered by: cumulative time
+   List reduced from 2902 to 29 due to restriction <'pikachu'>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       64    0.000    0.000    0.073    0.001 /media/sifat/hdd/pikachu/utils/message_utils.py:68(handle_all_messages)
+       40    0.001    0.000    0.073    0.002 /media/sifat/hdd/pikachu/utils/message_utils.py:93(user_message_handler)
+  364/363    0.001    0.000    0.060    0.000 /media/sifat/hdd/pikachu/Main/bot_core.py:77(main)
+       18    0.000    0.000    0.036    0.002 /media/sifat/hdd/pikachu/ai/gemini_schema.py:483(gemini_non_stream)
+       10    0.000    0.000    0.030    0.003 /media/sifat/hdd/pikachu/ext/user_content_tools.py:209(create_prompt)
+       19    0.000    0.000    0.009    0.000 /media/sifat/hdd/pikachu/Main/bot_core.py:88(telegram_webhook)
+       19    0.000    0.000    0.008    0.000 /media/sifat/hdd/pikachu/bot/echo.py:32(echo)
+       14    0.000    0.000    0.006    0.000 /media/sifat/hdd/pikachu/utils/message_utils.py:33(send_message)
+        7    0.000    0.000    0.005    0.001 /media/sifat/hdd/pikachu/utils/utils.py:95(safe_send)
+       24    0.000    0.000    0.002    0.000 /media/sifat/hdd/pikachu/utils/db.py:155(populate_db_caches)
+       16    0.000    0.000    0.001    0.000 /media/sifat/hdd/pikachu/utils/db.py:107(load_all_persona)
+        8    0.000    0.000    0.001    0.000 /media/sifat/hdd/pikachu/ext/user_content_tools.py:283(save_conversation)
+      7/6    0.000    0.000    0.001    0.000 /media/sifat/hdd/pikachu/utils/db.py:124(initialize_bot)
+        5    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:92(load_all_user_info)
+      3/2    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:66(load_gemini_api)
+        5    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:77(load_all_user_settings)
+        2    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:56(load_gemini_model)
+        2    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:36(load_all_user)
+        2    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:46(load_admin)
+        2    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:27(get_token)
+        1    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/message_utils.py:83(run_workers)
+        1    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/Logs/logs_creator.py:23(save_profiler_stats)
+       62    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:38(<genexpr>)
+        1    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/bot/media_handler.py:73(run_media_workers)
+       12    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/bot/media_handler.py:59(media_worker)
+        2    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/utils.py:35(is_ddos)
+        7    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:48(<genexpr>)
+        1    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/utils.py:118(get_settings)
+        1    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/utils.py:154(load_persona)
+
+
+
+
+--- Top 100 Functions by Total Time ---Sun Aug 17 23:50:39 2025    /media/sifat/hdd/pikachu/Logs/profile.stats
+
+         167237 function calls (161617 primitive calls) in 36.872 seconds
+
+   Ordered by: internal time
+   List reduced from 2902 to 29 due to restriction <'pikachu'>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+  364/363    0.001    0.000    0.060    0.000 /media/sifat/hdd/pikachu/Main/bot_core.py:77(main)
+       40    0.001    0.000    0.073    0.002 /media/sifat/hdd/pikachu/utils/message_utils.py:93(user_message_handler)
+       64    0.000    0.000    0.073    0.001 /media/sifat/hdd/pikachu/utils/message_utils.py:68(handle_all_messages)
+        8    0.000    0.000    0.001    0.000 /media/sifat/hdd/pikachu/ext/user_content_tools.py:283(save_conversation)
+       10    0.000    0.000    0.030    0.003 /media/sifat/hdd/pikachu/ext/user_content_tools.py:209(create_prompt)
+       18    0.000    0.000    0.036    0.002 /media/sifat/hdd/pikachu/ai/gemini_schema.py:483(gemini_non_stream)
+       16    0.000    0.000    0.001    0.000 /media/sifat/hdd/pikachu/utils/db.py:107(load_all_persona)
+       14    0.000    0.000    0.006    0.000 /media/sifat/hdd/pikachu/utils/message_utils.py:33(send_message)
+       19    0.000    0.000    0.008    0.000 /media/sifat/hdd/pikachu/bot/echo.py:32(echo)
+      7/6    0.000    0.000    0.001    0.000 /media/sifat/hdd/pikachu/utils/db.py:124(initialize_bot)
+       62    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:38(<genexpr>)
+       19    0.000    0.000    0.009    0.000 /media/sifat/hdd/pikachu/Main/bot_core.py:88(telegram_webhook)
+       24    0.000    0.000    0.002    0.000 /media/sifat/hdd/pikachu/utils/db.py:155(populate_db_caches)
+        5    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:77(load_all_user_settings)
+        2    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:36(load_all_user)
+        2    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/utils.py:35(is_ddos)
+        5    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:92(load_all_user_info)
+      3/2    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:66(load_gemini_api)
+        7    0.000    0.000    0.005    0.001 /media/sifat/hdd/pikachu/utils/utils.py:95(safe_send)
+        2    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:46(load_admin)
+        1    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/message_utils.py:83(run_workers)
+        2    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:56(load_gemini_model)
+        2    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:27(get_token)
+        1    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/bot/media_handler.py:73(run_media_workers)
+       12    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/bot/media_handler.py:59(media_worker)
+        7    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/db.py:48(<genexpr>)
+        1    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/Logs/logs_creator.py:23(save_profiler_stats)
+        1    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/utils.py:118(get_settings)
+        1    0.000    0.000    0.000    0.000 /media/sifat/hdd/pikachu/utils/utils.py:154(load_persona)
+
+
