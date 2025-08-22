@@ -103,13 +103,49 @@ async def search_online(user_message, api, settings):
                 system_instruction=load_persona(settings),
                 tools = tools,
                 response_modalities=["TEXT"],
+                safety_settings=[
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HARASSMENT",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HATE_SPEECH",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_DANGEROUS_CONTENT",
+                        threshold="BLOCK_NONE",
+                    ),
+                ],
             )
         else:
             config = types.GenerateContentConfig(
                 temperature = settings[4],
                 system_instruction=load_persona(settings),
                 tools = tools,
-                response_modalities=["TEXT"]
+                response_modalities=["TEXT"],
+                safety_settings=[
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HARASSMENT",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HATE_SPEECH",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_DANGEROUS_CONTENT",
+                        threshold="BLOCK_NONE",
+                    ),
+                ],
             )
         
         temp_api = gemini_api_keys.copy()
@@ -149,13 +185,49 @@ async def execute_code(update: Update, content: ContextTypes.DEFAULT_TYPE, user_
                 thinking_config=types.ThinkingConfig(thinking_budget=settings[3]),
                 temperature = settings[4],
                 system_instruction=load_persona(settings),
-                tools = tools
+                tools = tools,
+                safety_settings=[
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HARASSMENT",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HATE_SPEECH",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_DANGEROUS_CONTENT",
+                        threshold="BLOCK_NONE",
+                    ),
+                ],
             )
         else:
             config = types.GenerateContentConfig(
                 temperature = settings[4],
                 system_instruction=load_persona(settings),
-                tools = tools
+                tools = tools,
+                safety_settings=[
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HARASSMENT",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HATE_SPEECH",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_DANGEROUS_CONTENT",
+                        threshold="BLOCK_NONE",
+                    ),
+                ],
             )
 
         temp_api = gemini_api_keys.copy()
@@ -313,6 +385,24 @@ async def get_group_data(update:Update, content:ContextTypes.DEFAULT_TYPE, user_
                 system_instruction=load_persona(settings),
                 tools = tools,
                 response_modalities=["TEXT"],
+                safety_settings=[
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HARASSMENT",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HATE_SPEECH",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_DANGEROUS_CONTENT",
+                        threshold="BLOCK_NONE",
+                    ),
+                ],
             )
         else:
             config = types.GenerateContentConfig(
@@ -320,6 +410,24 @@ async def get_group_data(update:Update, content:ContextTypes.DEFAULT_TYPE, user_
                 system_instruction=load_persona(settings),
                 tools = tools,
                 response_modalities=["TEXT"],
+                safety_settings=[
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HARASSMENT",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HATE_SPEECH",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_DANGEROUS_CONTENT",
+                        threshold="BLOCK_NONE",
+                    ),
+                ],
             )
         
 
@@ -368,6 +476,24 @@ async def create_image(update:Update, content:ContextTypes.DEFAULT_TYPE, api, pr
                     contents = prompt,
                     config = types.GenerateContentConfig(
                         response_modalities=["TEXT", "IMAGE"],
+                        safety_settings=[
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_HARASSMENT",
+                            threshold="BLOCK_NONE",
+                        ),
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_HATE_SPEECH",
+                            threshold="BLOCK_NONE",
+                        ),
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                            threshold="BLOCK_NONE",
+                        ),
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_DANGEROUS_CONTENT",
+                            threshold="BLOCK_NONE",
+                        ),
+                    ],
                     )
                 )
                 if response and (response.candidates[0].content.parts[0].text is not None or response.candidates[0].content.parts[0].inline_data is not None):
@@ -435,7 +561,8 @@ async def analyze_media(update: Update, content: ContextTypes.DEFAULT_TYPE, medi
             await update.message.reply_text("No media found to analyze.")
             return None
         temp_api = gemini_api_keys.copy()
-        
+        model = "gemini-2.5-pro" if settings[2] == "gemini-2.5-pro" else "gemini-2.5-flash"
+
         for _ in range(len(gemini_api_keys)):
             try:
                 api = random.choice(temp_api)
@@ -449,13 +576,31 @@ async def analyze_media(update: Update, content: ContextTypes.DEFAULT_TYPE, medi
                         return None
                 contents.append(prompt)
                 response = await client.aio.models.generate_content(
-                    model = settings[2],
+                    model = model,
                     contents = contents,
                     config = types.GenerateContentConfig(
                         thinking_config=types.ThinkingConfig(thinking_budget=settings[3]),
                         temperature=settings[4],
                         system_instruction=load_persona(settings),
                         response_modalities=["TEXT"],
+                        safety_settings=[
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_HARASSMENT",
+                            threshold="BLOCK_NONE",
+                        ),
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_HATE_SPEECH",
+                            threshold="BLOCK_NONE",
+                        ),
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                            threshold="BLOCK_NONE",
+                        ),
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_DANGEROUS_CONTENT",
+                            threshold="BLOCK_NONE",
+                        ),
+                    ],
                     )
                 )
                 response.text
@@ -494,13 +639,49 @@ async def gemini_non_stream(update:Update, content:ContextTypes.DEFAULT_TYPE, us
                 system_instruction=load_persona(settings),
                 tools = tools,
                 response_modalities=["TEXT"],
+                safety_settings=[
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HARASSMENT",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HATE_SPEECH",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_DANGEROUS_CONTENT",
+                        threshold="BLOCK_NONE",
+                    ),
+                ],
             )
         else:
             config = types.GenerateContentConfig(
                 temperature = settings[4],
                 system_instruction=load_persona(settings),
                 tools = tools,
-                response_modalities=["TEXT"]
+                response_modalities=["TEXT"],
+                safety_settings=[
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HARASSMENT",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HATE_SPEECH",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                        threshold="BLOCK_NONE",
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_DANGEROUS_CONTENT",
+                        threshold="BLOCK_NONE",
+                    ),
+                ],
             )
 
 

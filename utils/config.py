@@ -86,5 +86,5 @@ except:
 
 #Configuring webhooks url
 #WEBHOOK_URL = "https://2d6320edc592.ngrok-free.app"              #local testing
-WEBHOOK_URL = "https://pikachu-zhx7.onrender.com"                #original render url
-#WEBHOOK_URL = "https://phantom-bot-9r8d.onrender.com"                #new render url
+#WEBHOOK_URL = "https://pikachu-zhx7.onrender.com"                #original render url
+WEBHOOK_URL = "https://phantom-bot-9r8d.onrender.com"                #new render url

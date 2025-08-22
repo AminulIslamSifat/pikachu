@@ -81,7 +81,7 @@ async def main():
         await db_utils.populate_db_caches()                 #Loading all data into ram
 
         TOKENs = await db_utils.get_token()                   #getting the bot token
-        TOKEN = TOKENs[2]
+        TOKEN = TOKENs[1]
 
         #Initializing the main telegram bot application
         bot_app = ApplicationBuilder().token(TOKEN).request(tg_request).concurrent_updates(True).build()
@@ -138,41 +138,41 @@ async def main():
 
         # --- WEBHOOK MODE (Currently Active) ---
         # This runs the bot with webhooks.
-        async with bot_app:
-            await bot_app.start()
-            # Set webhook
-            await bot_app.bot.set_webhook(
-                url=f"{WEBHOOK_URL}/{db_utils.TOKEN}",
-                allowed_updates=Update.ALL_TYPES
-            )
+        # async with bot_app:
+        #     await bot_app.start()
+        #     # Set webhook
+        #     await bot_app.bot.set_webhook(
+        #         url=f"{WEBHOOK_URL}/{db_utils.TOKEN}",
+        #         allowed_updates=Update.ALL_TYPES
+        #     )
 
 
-            # Run the web server
-            await server.serve()
+        #     # Run the web server
+        #     await server.serve()
             
 
-            # On shutdown, stop the bot and delete the webhook
-            #This function waits for all the workers to finish
-            for _ in workers:
-                await message_queue.put(None)
-            for _ in media_workers:
-                await media_queue.put(None)
-            await asyncio.gather(*workers, *media_workers)
+        #     # On shutdown, stop the bot and delete the webhook
+        #     #This function waits for all the workers to finish
+        #     for _ in workers:
+        #         await message_queue.put(None)
+        #     for _ in media_workers:
+        #         await media_queue.put(None)
+        #     await asyncio.gather(*workers, *media_workers)
 
 
-            # Stop the bot by deleteing webhook
-            await bot_app.bot.delete_webhook()
-            await bot_app.stop()
+        #     # Stop the bot by deleteing webhook
+        #     await bot_app.bot.delete_webhook()
+        #     await bot_app.stop()
 
         # --- POLLING MODE (Currently Inactive) ---
 
-        # await bot_app.initialize()
-        # await bot_app.start()
-        # # This will run the bot and the web server concurrently
-        # await asyncio.gather(
-        #     bot_app.updater.start_polling(allowed_updates=Update.ALL_TYPES),
-        #     server.serve()
-        # )
+        await bot_app.initialize()
+        await bot_app.start()
+        # This will run the bot and the web server concurrently
+        await asyncio.gather(
+            bot_app.updater.start_polling(allowed_updates=Update.ALL_TYPES),
+            server.serve()
+        )
 
     except Exception as e:
         print(f"Error in main function. Error Code - {e}")

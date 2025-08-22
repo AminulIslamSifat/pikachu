@@ -124,6 +124,7 @@ async def button_handler(update:Update, content:ContextTypes.DEFAULT_TYPE) -> No
             conn = await aiosqlite.connect("data/settings/user_settings.db")
             model = query.data
             if model != "gemini-2.5-pro":
+                await query.edit_message_text(f"AI model is successfully changed to {model}.")
                 await conn.execute("UPDATE user_settings SET model = ? WHERE id = ?", (model, user_id))
                 await conn.commit()
                 await conn.close()
@@ -133,7 +134,7 @@ async def button_handler(update:Update, content:ContextTypes.DEFAULT_TYPE) -> No
                     {"$set": {"settings.2": model}}
                 )
 
-                await query.edit_message_text(f"AI model is successfully changed to {model}.")
+                
                 new_settings = await load_all_user_settings()
                 all_settings.clear()
                 all_settings.update(new_settings)
@@ -142,13 +143,13 @@ async def button_handler(update:Update, content:ContextTypes.DEFAULT_TYPE) -> No
                 await conn.execute("UPDATE user_settings SET model = ?, thinking_budget = ? WHERE id = ?", (model, -1, user_id))
                 await conn.commit()
                 await conn.close()
+                await query.edit_message_text(f"AI model is successfully changed to {model}.")
 
                 await mdb[f"{user_id}"].update_one(
                     {"id": user_id},
                     {"$set": {"settings.2": model, "settings.3": -1}}
                 )
 
-                await query.edit_message_text(f"AI model is successfully changed to {model}.")
                 new_settings = await load_all_user_settings()
                 all_settings.clear()
                 all_settings.update(new_settings)

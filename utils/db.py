@@ -62,7 +62,7 @@ async def load_gemini_model():
         return None
     
 
-#fucntion to load gemini_api
+#function to load gemini_api
 async def load_gemini_api():
     try:
         api_list = (await mdb["API"].find_one({}))["gemini_api"]
