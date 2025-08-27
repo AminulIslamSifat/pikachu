@@ -2,442 +2,833 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📁 File Explorer - Premium</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Define CSS variables for consistent theming */
         :root {
-            --bg: #0a0a0a;
-            --text: #e0e0e0;
-            --primary: #00aaff;
-            --accent: #00ffaa;
-            --border: rgba(255, 255, 255, 0.1);
-            --container-bg: rgba(26, 26, 26, 0.5);
-            --hover-bg: rgba(0, 170, 255, 0.05);
-            --shadow: rgba(0, 170, 255, 0.1);
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-glass: rgba(26, 26, 46, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(99, 102, 241, 0.3);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 12px 40px rgba(99, 102, 241, 0.2);
+            --radius: 16px;
+            --radius-sm: 8px;
         }
 
-        /* Universal box-sizing for consistent layout */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
-        /* Body styling for background, font, and padding */
         body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            padding: 3rem;
-            background-image: linear-gradient(45deg, rgba(0, 170, 255, 0.05) 25%, transparent 25%),
-                linear-gradient(-45deg, rgba(0, 170, 255, 0.05) 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, rgba(0, 170, 255, 0.05) 75%),
-                linear-gradient(-45deg, transparent 75%, rgba(0, 170, 255, 0.05) 75%);
-            background-size: 20px 20px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            font-size: 14px;
+            overflow-x: hidden;
         }
 
-        /* Heading styling with primary color and shadow */
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            text-shadow: 0 0 15px var(--primary);
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        /* Path display styling */
-        .path {
-            color: #888;
-            font-size: 1rem;
-            margin-bottom: 2rem;
-            font-weight: 500;
-        }
-
-        /* Top bar layout for search and action buttons */
-        .top-bar {
-            display: flex;
-            flex-wrap: wrap; /* Allow items to wrap on smaller screens */
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        /* Search bar styling */
-        .search-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 100%; /* Full width on smaller screens */
-            max-width: 450px; /* Max width on larger screens */
-        }
-
-        .search-bar input {
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            padding: 0.75rem 1.25rem;
-            font-size: 1rem;
-            font-weight: 500;
-            background-color: var(--container-bg);
-            color: var(--text);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            z-index: -1;
         }
 
-        .search-bar input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 20px var(--shadow);
-        }
-
-        /* Button and back link general styling */
-        .btn, .back-link {
-            background: linear-gradient(45deg, var(--primary), var(--accent));
-            color: #fff;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 4px 15px rgba(0, 170, 255, 0.2);
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .btn:hover, .back-link:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 170, 255, 0.3);
-        }
-
-        /* Container for file list */
         .container {
-            background: var(--container-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
         }
 
-        ul {
-            list-style: none;
-        }
-
-        /* List item styling for files/folders */
-        li {
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border);
+        /* Header */
+        .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: background 0.3s ease, border-color 0.3s ease;
-            border-radius: 10px;
-            margin-bottom: 0.5rem;
+            margin-bottom: 32px;
+            gap: 20px;
+            flex-wrap: wrap;
         }
 
-        li:last-child {
-            border-bottom: none;
-        }
-
-        li:hover {
-            background: var(--hover-bg);
-            border-color: var(--primary);
-        }
-
-        /* File information section */
-        .file-info {
+        .title {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            font-size: 1.1rem;
+            gap: 12px;
+            font-size: clamp(24px, 4vw, 32px);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .title-icon {
+            width: clamp(28px, 5vw, 36px);
+            height: clamp(28px, 5vw, 36px);
+            color: var(--accent);
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: var(--text-secondary);
             font-weight: 500;
+            margin-top: 8px;
+            word-break: break-all;
         }
 
-        .file-info i {
-            font-style: normal;
+        /* Toolbar */
+        .toolbar {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 100; /* Ensure toolbar has higher z-index than file grid */
         }
 
-        .file-info .icon {
-            font-size: 1.5rem;
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
-        /* File size styling */
-        .file-size {
-            font-size: 0.9rem;
-            color: #aaa;
-            /* margin-left: 1rem; Removed as it's now in actions */
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        /* Link styling */
-        a {
-            color: var(--text);
-            text-decoration: none;
-            transition: color 0.3s ease;
+        /* Search */
+        .search-container {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+            max-width: 400px;
         }
 
-        a:hover {
-            color: var(--primary);
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.2s ease;
         }
 
-        /* Actions links styling */
-        .actions {
-            display: flex; /* Ensure actions are in a row */
-            align-items: center; /* Align items vertically */
-            gap: 1.5rem; /* Space between action items */
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
-        .actions a {
-            font-size: 1rem;
-            font-weight: 500;
-            color: #aaa;
-            /* margin-left: 1.5rem; Removed as gap handles spacing */
-            transition: all 0.3s ease;
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            color: var(--text-secondary);
+        }
+
+        /* Buttons */
+        .btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 8px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
         }
 
-        .actions a:hover {
-            color: var(--accent);
-            text-shadow: 0 0 10px var(--accent);
+        .btn-primary {
+            background: var(--accent);
+            color: white;
         }
 
-        /* Dropdown specific styles */
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--border-hover);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Dropdown */
         .dropdown {
             position: relative;
-            display: inline-block;
+            z-index: 200; /* Ensure dropdown container has high z-index */
         }
 
         .dropdown-content {
-            display: none;
             position: absolute;
-            background-color: var(--container-bg);
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
-            z-index: 1;
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            top: 100%; /* Position below the button */
+            top: calc(100% + 8px);
             left: 0;
-            margin-top: 5px; /* Space between button and dropdown */
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow);
+            z-index: 300; /* Higher z-index to appear above file grid */
+            min-width: 180px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px);
+            transition: all 0.2s ease;
         }
 
-        .dropdown-content a {
-            color: var(--text);
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            text-align: left;
-            transition: background-color 0.2s ease;
-            border-radius: 8px; /* For rounded corners within dropdown */
-        }
-
-        .dropdown-content a:hover {
-            background-color: var(--hover-bg);
-            color: var(--primary);
-        }
-
-        /* Show the dropdown content when 'show' class is added by JS */
         .dropdown-content.show {
-            display: block;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
 
-        /* Responsive adjustments */
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background 0.2s ease;
+            font-size: 14px;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* File Grid */
+        .file-grid {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            position: relative;
+            z-index: 1; /* Lower z-index so dropdown appears above */
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            color: var(--accent);
+        }
+
+        .file-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-name {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-name:hover {
+            color: var(--accent);
+        }
+
+        .file-size {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        .file-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .file-item:hover .file-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            padding: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .action-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .action-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 64px 32px;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 24px;
+            opacity: 0.3;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            body {
-                padding: 1.5rem;
+            .container {
+                padding: 16px;
             }
 
-            h1 {
-                font-size: 2rem;
+            .header {
+                margin-bottom: 24px;
             }
 
-            .path {
-                font-size: 0.9rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .top-bar {
+            .toolbar {
+                padding: 16px;
                 flex-direction: column;
                 align-items: stretch;
+                gap: 12px;
             }
 
-            .top-bar > div {
+            .toolbar-left {
+                justify-content: space-between;
                 width: 100%;
-                display: flex;
+            }
+
+            .toolbar-right {
+                width: 100%;
+            }
+
+            .search-container {
+                min-width: auto;
+                max-width: none;
+            }
+
+            .file-item {
+                padding: 12px 16px;
                 flex-wrap: wrap;
-                gap: 1rem;
-            }
-            .top-bar .actions-group {
-                justify-content: space-between;
+                gap: 12px;
             }
 
-            .search-bar {
-                max-width: 100%;
-            }
-            .top-bar > div:last-child {
-                margin-left: 0;
-                width: 100%;
-                justify-content: space-between;
+            .file-info {
+                gap: 12px;
             }
 
-            li {
+            .file-actions {
+                opacity: 1;
+                margin-left: auto;
+            }
+
+            .btn {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            .modal-content {
+                padding: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .file-item {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 1rem;
-                padding: 1rem;
-            }
-            .file-info{
-                width: 100%;
             }
 
-            .actions {
-                width: 100%;
-                display: flex;
-                justify-content: flex-end;
-                margin-top: 0.5rem;
-                gap: 1rem;
+            .file-actions {
+                align-self: flex-end;
+                margin-left: 0;
+                margin-top: 8px;
             }
+        }
 
-            .actions a {
-                margin-left: 1rem;
-                font-size: 0.9rem;
+        /* Loading state */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
-            .file-size{
-                margin-right: auto;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
+        }
+
+        .file-item {
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        /* Focus styles for accessibility */
+        .btn:focus-visible,
+        .file-name:focus-visible,
+        .action-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
         }
     </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div>
+                <h1 class="title">
+                    <svg class="title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"/>
+                        <path d="M8 1v6"/>
+                        <path d="M16 1v6"/>
+                    </svg>
+                    File Explorer
+                </h1>
+                <div class="breadcrumb" id="breadcrumb">Current path: /{{ current_path }}</div>
+            </div>
+            <a href="{{ url_for('logout') }}" class="btn btn-danger">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <polyline points="16 17 21 12 16 7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Logout
+            </a>
+        </header>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                {% if current_path %}
+                <a href="{{ url_for('files', req_path=parent_path) }}" class="btn btn-secondary">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="19" y1="12" x2="5" y2="12"/>
+                        <polyline points="12 19 5 12 12 5"/>
+                    </svg>
+                    Back
+                </a>
+                {% endif %}
+                
+                <div class="dropdown">
+                    <button class="btn btn-primary" onclick="toggleDropdown()">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        New
+                    </button>
+                    <div class="dropdown-content" id="dropdownMenu">
+                        <a href="#" class="dropdown-item" onclick="promptNewFile(); toggleDropdown();">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                            New File
+                        </a>
+                        <a href="#" class="dropdown-item" onclick="promptNewFolder(); toggleDropdown();">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                            </svg>
+                            New Folder
+                        </a>
+                    </div>
+                </div>
+                
+                <button class="btn btn-secondary" onclick="uploadFile()">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    Upload
+                </button>
+            </div>
+            
+            <div class="toolbar-right">
+                <div class="search-container">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="M21 21l-4.35-4.35"/>
+                    </svg>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search files and folders..." oninput="filterFiles()">
+                </div>
+            </div>
+        </div>
+
+        <!-- File Grid -->
+        <div class="file-grid" id="fileGrid">
+            {% if files %}
+                {% for file in files %}
+                <div class="file-item" data-name="{{ file.name.lower() }}">
+                    <div class="file-info">
+                        {% if file.is_dir %}
+                        <svg class="file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        {% else %}
+                        <svg class="file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                        {% endif %}
+                        
+                        <div class="file-details">
+                            {% if file.is_dir %}
+                            <a href="{{ url_for('files', req_path=(current_path + '/' + file.name) if current_path else file.name) }}" class="file-name">
+                                {{ file.name }}
+                            </a>
+                            {% else %}
+                            <a href="{{ url_for('view_file', filepath=(current_path + '/' + file.name) if current_path else file.name) }}" class="file-name">
+                                {{ file.name }}
+                            </a>
+                            <div class="file-size" data-size="{{ file.size if not file.is_dir else '' }}">
+                                {% if not file.is_dir and file.size %}{{ file.size }} bytes{% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="file-actions">
+                        {% if not file.is_dir %}
+                        <a href="{{ url_for('download_file', filepath=(current_path + '/' + file.name) if current_path else file.name) }}" 
+                           class="action-btn" title="Download">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                        </a>
+                        {% endif %}
+                        <button class="action-btn danger" title="Delete" 
+                                onclick="confirmDelete('{{ current_path }}', '{{ file.name }}', {{ 'true' if file.is_dir else 'false' }})">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"/>
+                                <path d="M19 6l-2 14H7L5 6"/>
+                                <path d="M10 11v6"/>
+                                <path d="M14 11v6"/>
+                                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                <h3>This folder is empty</h3>
+                <p>Create a new file or folder to get started.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="modalTitle">Create New Item</h3>
+            <input type="text" class="modal-input" id="modalInput" placeholder="Enter name...">
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" id="modalConfirm" onclick="confirmModal()">Create</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Function to filter files based on search query
+        let currentModalCallback = null;
+        let dropdownOpen = false;
+
+        // Optimized search with debounce
+        let searchTimeout;
         function filterFiles() {
-            const query = document.getElementById("fileSearch").value.toLowerCase();
-            const items = document.querySelectorAll(".file-item");
-            items.forEach(item => {
-                const name = item.dataset.name.toLowerCase();
-                item.style.display = name.includes(query) ? "flex" : "none";
-            });
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const query = document.getElementById('searchInput').value.toLowerCase();
+                const items = document.querySelectorAll('.file-item');
+                
+                items.forEach(item => {
+                    const name = item.dataset.name;
+                    const match = name.includes(query);
+                    item.style.display = match ? 'flex' : 'none';
+                });
+            }, 150);
         }
 
-        // Function to toggle the new file/folder options dropdown
-        function toggleNewOptions() {
-            document.getElementById("newOptions").classList.toggle("show");
+        // Dropdown management
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdownMenu');
+            dropdownOpen = !dropdownOpen;
+            dropdown.classList.toggle('show', dropdownOpen);
         }
 
-        // Close the dropdown if the user clicks outside of it
-        window.onclick = function(event) {
-            // Check if the click is outside the dropdown button and the dropdown content
-            if (!event.target.matches('.btn') && !event.target.closest('.dropdown')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    // If the dropdown is open, close it
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.dropdown') && dropdownOpen) {
+                document.getElementById('dropdownMenu').classList.remove('show');
+                dropdownOpen = false;
+            }
+        });
+
+        // Modal functions
+        function showModal(title, placeholder, callback) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalInput').placeholder = placeholder;
+            document.getElementById('modalInput').value = '';
+            document.getElementById('modal').style.display = 'flex';
+            currentModalCallback = callback;
+            
+            // Focus input
+            setTimeout(() => {
+                document.getElementById('modalInput').focus();
+            }, 100);
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            currentModalCallback = null;
+        }
+
+        function confirmModal() {
+            const value = document.getElementById('modalInput').value.trim();
+            if (value && currentModalCallback) {
+                currentModalCallback(value);
+            }
+            closeModal();
+        }
+
+        // Enter key support for modal
+        document.getElementById('modalInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                confirmModal();
+            }
+        });
+
+        // File operations
+        async function makeRequest(url, data) {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.error || 'Operation failed'}`);
                 }
+            } catch (error) {
+                alert(`Network error: ${error.message}`);
             }
         }
 
-        // Function to prompt for a new file name and send request to backend
         function promptNewFile() {
-            // Using a custom modal for user interaction instead of alert/prompt
-            showModal("Enter new file name:", (filename) => {
-                if (filename) {
-                    fetch("{{ url_for('create_file') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            path: "{{ current_path }}",
-                            filename: filename
-                        })
-                    }).then(res => {
-                        if (res.ok) location.reload(); // Reload on success
-                        else showModal("Failed to create file.", null, true); // Show error in modal
-                    }).catch(error => {
-                        showModal(`An error occurred: ${error.message}`, null, true);
-                    });
-                }
+            showModal('Create New File', 'Enter file name...', (filename) => {
+                makeRequest("{{ url_for('create_file') }}", {
+                    path: "{{ current_path }}",
+                    filename: filename
+                });
             });
         }
 
-        // Function to prompt for a new folder name and send request to backend
         function promptNewFolder() {
-            showModal("Enter new folder name:", (foldername) => {
-                if (foldername) {
-                    fetch("{{ url_for('create_folder') }}", { // Assumes a Flask endpoint /create_folder
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            path: "{{ current_path }}",
-                            foldername: foldername
-                        })
-                    }).then(res => {
-                        if (res.ok) location.reload(); // Reload on success
-                        else showModal("Failed to create folder.", null, true);
-                    }).catch(error => {
-                        showModal(`An error occurred: ${error.message}`, null, true);
-                    });
-                }
+            showModal('Create New Folder', 'Enter folder name...', (foldername) => {
+                makeRequest("{{ url_for('create_folder') }}", {
+                    path: "{{ current_path }}",
+                    foldername: foldername
+                });
             });
         }
 
-
-        // Function to delete a file or folder and send request to backend
-        function deleteFile(path, filename, is_dir) {
-            const type = is_dir ? "folder" : "file";
-            showModal(`Are you sure you want to delete the ${type} "${filename}"?`, (confirm) => {
-                if (confirm) {
-                    fetch("{{ url_for('delete_file') }}", { // Assuming 'delete_file' endpoint handles both files and folders
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            path: path,
-                            filename: filename,
-                            is_dir: is_dir // Pass is_dir to backend
-                        })
-                    }).then(async res => {
-                        const result = await res.json();
-                        if (res.ok) {
-                            location.reload(); // Reload on success
-                        } else {
-                            showModal(`Error: ${result.error || `Failed to delete ${type}`}`, null, true); // Show error in modal
-                        }
-                    }).catch(error => {
-                        showModal(`An error occurred: ${error.message}`, null, true);
-                    });
-                }
-            }, true); // Pass true for confirmation dialog
+        function confirmDelete(path, filename, isDir) {
+            const type = isDir === 'true' ? 'folder' : 'file';
+            if (confirm(`Are you sure you want to delete the ${type} "${filename}"?`)) {
+                makeRequest("{{ url_for('delete_file') }}", {
+                    path: path,
+                    filename: filename,
+                    is_dir: isDir === 'true'
+                });
+            }
         }
 
-        // Function to trigger file upload
         function uploadFile() {
-            const fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.onchange = async (e) => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.onchange = async (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
 
@@ -446,241 +837,214 @@
                 formData.append('path', "{{ current_path }}");
 
                 try {
-                    const response = await fetch("{{ url_for('upload_file') }}", { // Assuming 'upload_file' is your endpoint
+                    const response = await fetch("{{ url_for('upload_file') }}", {
                         method: 'POST',
                         body: formData
                     });
 
                     if (response.ok) {
-                        location.reload(); // Reload on successful upload
+                        location.reload();
                     } else {
-                        const errorData = await response.json();
-                        showModal(`Failed to upload file: ${errorData.error || 'Unknown error'}`, null, true);
+                        const error = await response.json();
+                        alert(`Upload failed: ${error.error || 'Unknown error'}`);
                     }
                 } catch (error) {
-                    showModal(`An error occurred during upload: ${error.message}`, null, true);
+                    alert(`Upload error: ${error.message}`);
                 }
             };
-            fileInput.click(); // Programmatically click the hidden file input
+            input.click();
         }
 
-        // Custom Modal Implementation (replaces alert/prompt)
-        function showModal(message, callback, isConfirm = false) {
-            let modal = document.getElementById('customModal');
-            if (!modal) {
-                // Create modal element if it doesn't exist
-                modal = document.createElement('div');
-                modal.id = 'customModal';
-                modal.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.7);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 1000;
-                `;
-                modal.innerHTML = `
-                    <div style="
-                        background: var(--container-bg);
-                        padding: 2rem;
-                        border-radius: 12px;
-                        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-                        backdrop-filter: blur(15px);
-                        -webkit-backdrop-filter: blur(15px);
-                        color: var(--text);
-                        text-align: center;
-                        max-width: 400px;
-                        width: 90%;
-                    ">
-                        <p id="modalMessage" style="margin-bottom: 1.5rem; font-size: 1.1rem;"></p>
-                        <input type="text" id="modalInput" style="
-                            width: calc(100% - 2rem); /* Adjust width for padding */
-                            padding: 0.75rem 1rem;
-                            margin-bottom: 1rem;
-                            background-color: rgba(255, 255, 255, 0.1);
-                            border: 1px solid var(--border);
-                            border-radius: 8px;
-                            color: var(--text);
-                            font-size: 1rem;
-                        " placeholder="Enter value...">
-                        <div style="display: flex; justify-content: center; gap: 1rem;">
-                            <button id="modalConfirmBtn" class="btn" style="background: linear-gradient(45deg, var(--primary), var(--accent));">OK</button>
-                            <button id="modalCancelBtn" class="btn" style="background: #e74c3c;">Cancel</button>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(modal);
-            }
-
-            // Get modal elements
-            document.getElementById('modalMessage').innerText = message;
-            const modalInput = document.getElementById('modalInput');
-            const modalConfirmBtn = document.getElementById('modalConfirmBtn');
-            const modalCancelBtn = document.getElementById('modalCancelBtn');
-
-            // Configure modal based on whether it's a confirmation or input prompt
-            if (isConfirm) {
-                modalInput.style.display = 'none'; // Hide input for confirmation
-                modalConfirmBtn.innerText = 'Yes';
-                modalCancelBtn.style.display = 'inline-flex';
-            } else {
-                modalInput.style.display = 'block'; // Show input for text entry
-                modalInput.value = ''; // Clear previous input
-                modalConfirmBtn.innerText = 'Create';
-                modalCancelBtn.style.display = 'inline-flex';
-            }
-
-            modal.style.display = 'flex'; // Show the modal
-
-            // Event handlers for modal buttons
-            const handleConfirm = () => {
-                modal.style.display = 'none'; // Hide modal
-                if (callback) {
-                    if (isConfirm) {
-                        callback(true); // For confirmation, return true
-                    } else {
-                        callback(modalInput.value); // For input, return input value
-                    }
-                }
-                // Remove event listeners to prevent multiple calls
-                modalConfirmBtn.removeEventListener('click', handleConfirm);
-                modalCancelBtn.removeEventListener('click', handleCancel);
-            };
-
-            const handleCancel = () => {
-                modal.style.display = 'none'; // Hide modal
-                if (callback && isConfirm) {
-                    callback(false); // For confirmation, return false on cancel
-                }
-                // Remove event listeners
-                modalConfirmBtn.removeEventListener('click', handleConfirm);
-                modalCancelBtn.removeEventListener('click', handleCancel);
-            };
-
-            // Attach event listeners
-            modalConfirmBtn.addEventListener('click', handleConfirm);
-            modalCancelBtn.addEventListener('click', handleCancel);
-        }
-
-        // Function to format bytes into human-readable sizes (KB, MB)
-        function formatBytes(bytes, decimals = 2) {
-            if (bytes === 0) return '0 Bytes';
-
+        // Format file sizes on load
+        function formatBytes(bytes, decimals = 1) {
+            if (bytes === 0) return '0 B';
             const k = 1024;
             const dm = decimals < 0 ? 0 : decimals;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
-
             return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
         }
 
-        // Format file sizes on page load
-        document.addEventListener('DOMContentLoaded', (event) => {
-            document.querySelectorAll('.file-size').forEach(span => {
-                const sizeInBytes = parseInt(span.dataset.size);
-                if (!isNaN(sizeInBytes)) {
-                    span.textContent = formatBytes(sizeInBytes);
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Format file sizes
+            document.querySelectorAll('.file-size[data-size]').forEach(el => {
+                const size = parseInt(el.dataset.size);
+                if (size && size > 0) {
+                    el.textContent = formatBytes(size);
                 }
             });
+
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                // Ctrl/Cmd + N for new file
+                if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                    e.preventDefault();
+                    promptNewFile();
+                }
+                
+                // Ctrl/Cmd + Shift + N for new folder
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'N') {
+                    e.preventDefault();
+                    promptNewFolder();
+                }
+                
+                // Ctrl/Cmd + U for upload
+                if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+                    e.preventDefault();
+                    uploadFile();
+                }
+                
+                // Escape to close modal or dropdown
+                if (e.key === 'Escape') {
+                    if (document.getElementById('modal').style.display === 'flex') {
+                        closeModal();
+                    }
+                    if (dropdownOpen) {
+                        toggleDropdown();
+                    }
+                }
+                
+                // Focus search with Ctrl/Cmd + F
+                if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                    e.preventDefault();
+                    document.getElementById('searchInput').focus();
+                }
+            });
+
+            // Add loading states and animations
+            const fileItems = document.querySelectorAll('.file-item');
+            fileItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.05}s`;
+            });
         });
+
+        // Performance optimization: Use requestAnimationFrame for smooth animations
+        function smoothScroll(element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Add touch support for mobile
+        let touchStartY = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', (e) => {
+            const touchY = e.touches[0].clientY;
+            const touchDiff = touchStartY - touchY;
+            
+            // Add pull-to-refresh logic here if needed
+            if (touchDiff < -100 && window.scrollY === 0) {
+                // Pull to refresh functionality
+                console.log('Pull to refresh triggered');
+            }
+        }, { passive: true });
+
+        // Error handling wrapper
+        function handleError(error, context = '') {
+            console.error(`Error ${context}:`, error);
+            
+            // Show user-friendly error message
+            const errorDiv = document.createElement('div');
+            errorDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--danger);
+                color: white;
+                padding: 16px 24px;
+                border-radius: var(--radius-sm);
+                box-shadow: var(--shadow);
+                z-index: 1001;
+                animation: slideIn 0.3s ease;
+            `;
+            errorDiv.textContent = `Error: ${error.message || 'Something went wrong'}`;
+            
+            document.body.appendChild(errorDiv);
+            
+            // Remove after 5 seconds
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+
+        // Add connection status indicator
+        function updateConnectionStatus() {
+            const statusIndicator = document.createElement('div');
+            statusIndicator.id = 'connectionStatus';
+            statusIndicator.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 500;
+                z-index: 1000;
+                transition: all 0.3s ease;
+            `;
+            
+            if (navigator.onLine) {
+                statusIndicator.textContent = 'Online';
+                statusIndicator.style.background = 'var(--success)';
+                statusIndicator.style.color = 'white';
+            } else {
+                statusIndicator.textContent = 'Offline';
+                statusIndicator.style.background = 'var(--warning)';
+                statusIndicator.style.color = 'black';
+            }
+            
+            document.body.appendChild(statusIndicator);
+            
+            // Hide after 3 seconds if online
+            if (navigator.onLine) {
+                setTimeout(() => {
+                    statusIndicator.style.opacity = '0';
+                    setTimeout(() => statusIndicator.remove(), 300);
+                }, 3000);
+            }
+        }
+
+        // Listen for online/offline events
+        window.addEventListener('online', updateConnectionStatus);
+        window.addEventListener('offline', updateConnectionStatus);
+
+        // Add progress indicator for file uploads
+        function showProgress(percentage) {
+            let progressBar = document.getElementById('progressBar');
+            if (!progressBar) {
+                progressBar = document.createElement('div');
+                progressBar.id = 'progressBar';
+                progressBar.innerHTML = `
+                    <div style="
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 3px;
+                        background: rgba(99, 102, 241, 0.2);
+                        z-index: 1002;
+                    ">
+                        <div id="progressFill" style="
+                            height: 100%;
+                            background: var(--accent);
+                            width: 0%;
+                            transition: width 0.3s ease;
+                        "></div>
+                    </div>
+                `;
+                document.body.appendChild(progressBar);
+            }
+            
+            document.getElementById('progressFill').style.width = percentage + '%';
+            
+            if (percentage >= 100) {
+                setTimeout(() => {
+                    if (progressBar) progressBar.remove();
+                }, 500);
+            }
+        }
     </script>
-</head>
-
-<body>
-    <h1>
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-        </svg>
-        File Explorer
-    </h1>
-    <div class="path">Current path: /{{ current_path }}</div>
-
-
-    <div class="top-bar">
-        <div class="actions-group">
-            {% if current_path %}
-            <a class="back-link" href="{{ url_for('files', req_path=parent_path) }}">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
-                Back
-            </a>
-            {% endif %}
-            <!-- New "New" button with dropdown functionality -->
-            <div class="dropdown">
-                <button class="btn" onclick="toggleNewOptions()">➕ New</button>
-                <div class="dropdown-content" id="newOptions">
-                    <a href="#" onclick="promptNewFile(); return false;">📄 New File</a>
-                    <a href="#" onclick="promptNewFolder(); return false;">📂 New Folder</a>
-                </div>
-            </div>
-            <button class="btn" onclick="uploadFile()">⬆️ Upload File</button>
-        </div>
-
-        <div style="display: flex; align-items: center; gap: 1rem; margin-left: auto;">
-            <div class="search-bar">
-                <input type="text" id="fileSearch" onkeyup="filterFiles()" placeholder="🔍 Search files or folders...">
-            </div>
-            <a href="{{ url_for('logout') }}" class="btn" style="background: #e74c3c;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                Logout
-            </a>
-        </div>
-    </div>
-
-
-    <div class="container">
-        <ul>
-            {% for file in files %}
-            <li class="file-item" data-name="{{ file.name }}">
-                <div class="file-info">
-                    {% if file.is_dir %}
-                    <span class="icon">📂</span>
-                    <i><a href="{{ url_for('files', req_path=(current_path + '/' + file.name) if current_path else file.name) }}">{{ file.name }}/</a></i>
-                    {% else %}
-                    <span class="icon">📄</span>
-                    <i><a href="{{ url_for('view_file', filepath=(current_path + '/' + file.name) if current_path else file.name) }}">{{ file.name }}</a></i>
-                    {% endif %}
-                </div>
-
-                <div class="actions">
-                    {% if not file.is_dir %}
-                    <!-- File size moved here -->
-                    <span class="file-size" data-size="{{ file.size }}"></span>
-                    {% endif %}
-                    <!-- Delete button for both files and folders -->
-                    <a href="#" onclick="deleteFile('{{ current_path }}', '{{ file.name }}', {{ 'true' if file.is_dir else 'false' }})">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6l-2 14H7L5 6"></path>
-                            <path d="M10 11v6"></path>
-                            <path d="M14 11v6"></path>
-                            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 0 0 1 1 1v2"></path>
-                        </svg>
-                        Delete
-                    </a>
-                    {% if not file.is_dir %}
-                    <!-- Download button only for files -->
-                    <a href="{{ url_for('download_file', filepath=(current_path + '/' + file.name) if current_path else file.name) }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                        Download
-                    </a>
-                    {% endif %}
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
 </body>
-
 </html>

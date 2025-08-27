@@ -41,7 +41,7 @@ async def home(request: Request):
 
 @app.get("/status", status_code=status.HTTP_200_OK)
 @app.head("/status", status_code=status.HTTP_200_OK)
-async def status(request: Request):
+async def health_status(request: Request):
     """A simple health check endpoint for uptime monitoring, supports GET and HEAD."""
     return {"status": "ok"}
 

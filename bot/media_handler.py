@@ -315,6 +315,7 @@ async def process_media_update(update:Update, content:ContextTypes.DEFAULT_TYPE)
                     ],
                     )
                 )
+                print(response)
                 if response.prompt_feedback and response.prompt_feedback.block_reason:
                     return f"Your response is blocked by gemini because of {response.prompt_feedback.block_reason}. Your conversation history is deleted."
                 response.text
