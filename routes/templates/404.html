@@ -6,78 +6,152 @@
   <title>404 - Signal Lost</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Fira+Code:wght@300;400;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0a0a0a;
-      --text: #e0e0e0;
-      --primary: #00aaff;
-      --accent-red: #ff3c3c;
-      --accent-cyan: #00ffff;
-      --border: rgba(255, 255, 255, 0.1);
-      --container-bg: rgba(16, 18, 27, 0.6);
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #1a1a2e;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b3b8;
+      --accent-blue: #00d4ff;
+      --accent-purple: #8b5cf6;
+      --accent-red: #ff4757;
+      --accent-cyan: #00fff9;
+      --accent-gold: #ffd700;
+      --surface: rgba(255, 255, 255, 0.05);
+      --surface-hover: rgba(255, 255, 255, 0.1);
+      --border: rgba(255, 255, 255, 0.15);
+      --shadow: rgba(0, 212, 255, 0.3);
     }
 
     *, *::before, *::after {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
-      padding: 0;
       font-family: 'Fira Code', monospace;
-      background: var(--bg);
-      color: var(--text);
+      background: radial-gradient(ellipse at top, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      overflow: hidden;
-      position: relative;
+      perspective: 1000px;
     }
 
-    body::before {
-      content: '';
-      position: absolute;
+    /* Animated background elements */
+    .bg-layer {
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 30px 30px;
-      animation: pan-grid 20s linear infinite;
+      pointer-events: none;
       z-index: -1;
     }
 
-    @keyframes pan-grid {
-      from { background-position: 0 0; }
-      to { background-position: -30px -30px; }
+    .grid-overlay {
+      background-image:
+        linear-gradient(rgba(0, 212, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 255, 0.1) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: grid-drift 25s linear infinite;
+      opacity: 0.3;
+      transform-style: preserve-3d;
     }
 
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--accent-cyan);
+      border-radius: 50%;
+      animation: float 8s linear infinite;
+      will-change: transform, opacity;
+    }
+
+    .particle:nth-child(odd) {
+      background: var(--accent-blue);
+      animation-duration: 12s;
+    }
+
+    .particle:nth-child(3n) {
+      background: var(--accent-purple);
+      animation-duration: 10s;
+    }
+
+    @keyframes grid-drift {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-60px, -60px); }
+    }
+
+    @keyframes float {
+      0% { 
+        transform: translateY(100vh) translateX(0px) rotate(0deg);
+        opacity: 0;
+      }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { 
+        transform: translateY(-100px) translateX(50px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Main container */
     .container {
       text-align: center;
-      padding: 1rem;
-      animation: fade-in 1s ease-out;
-    }
-
-    @keyframes fade-in {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .glitch-text {
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(4rem, 10vw, 10rem);
-      color: var(--primary);
-      text-shadow: 0 0 20px var(--primary);
+      padding: 2rem 1rem;
+      max-width: 100vw;
+      width: 100%;
+      animation: entrance 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       position: relative;
-      animation: glitch-main 3s infinite linear alternate-reverse;
+      z-index: 1;
+      transform-style: preserve-3d;
     }
 
-    .glitch-text::before,
-    .glitch-text::after {
+    @keyframes entrance {
+      0% { 
+        opacity: 0;
+        transform: translateY(50px) scale(0.9) rotateX(10deg);
+        filter: blur(10px);
+      }
+      100% { 
+        opacity: 1;
+        transform: translateY(0) scale(1) rotateX(0);
+        filter: blur(0);
+      }
+    }
+
+    /* Enhanced Glitch effect for 404 */
+    .error-code {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(4rem, 15vw, 12rem);
+      font-weight: 900;
+      color: var(--accent-blue);
+      text-shadow: 
+        0 0 10px currentColor,
+        0 0 20px currentColor,
+        0 0 40px currentColor;
+      position: relative;
+      margin-bottom: 1rem;
+      animation: pulse-glow 2s ease-in-out infinite alternate;
+      transform: translateZ(20px);
+      will-change: transform, text-shadow;
+    }
+
+    .error-code::before,
+    .error-code::after {
       content: attr(data-text);
       position: absolute;
       top: 0;
@@ -87,141 +161,603 @@
       overflow: hidden;
     }
 
-    .glitch-text::before {
+    .error-code::before {
       color: var(--accent-red);
-      left: -2px;
+      left: -3px;
       text-shadow: -2px 0 var(--accent-red);
-      animation: glitch-anim-1 2s infinite linear alternate-reverse;
-      clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+      animation: glitch-1 3s infinite linear alternate-reverse;
+      clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
     }
 
-    .glitch-text::after {
+    .error-code::after {
       color: var(--accent-cyan);
-      left: 2px;
+      left: 3px;
       text-shadow: 2px 0 var(--accent-cyan);
-      animation: glitch-anim-2 3s infinite linear alternate-reverse;
-      clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+      animation: glitch-2 2.5s infinite linear alternate-reverse;
+      clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
     }
 
-    @keyframes glitch-anim-1 {
-      0%, 100% { clip-path: polygon(0 45%, 100% 45%, 100% 55%, 0 55%); }
-      25% { clip-path: polygon(0 0, 100% 0, 100% 20%, 0 20%); }
-      50% { clip-path: polygon(0 80%, 100% 80%, 100% 100%, 0 100%); }
-      75% { clip-path: polygon(0 30%, 100% 30%, 100% 40%, 0 40%); }
+    @keyframes pulse-glow {
+      0% { 
+        text-shadow: 
+          0 0 10px currentColor,
+          0 0 20px currentColor,
+          0 0 40px currentColor;
+      }
+      100% { 
+        text-shadow: 
+          0 0 20px currentColor,
+          0 0 30px currentColor,
+          0 0 60px currentColor;
+      }
     }
 
-    @keyframes glitch-anim-2 {
-      0%, 100% { clip-path: polygon(0 60%, 100% 60%, 100% 70%, 0 70%); }
-      25% { clip-path: polygon(0 20%, 100% 20%, 100% 35%, 0 35%); }
-      50% { clip-path: polygon(0 5%, 100% 5%, 100% 15%, 0 15%); }
-      75% { clip-path: polygon(0 75%, 100% 75%, 100% 90%, 0 90%); }
+    @keyframes glitch-1 {
+      0%, 100% { clip-path: polygon(0 35%, 100% 35%, 100% 45%, 0 45%); }
+      25% { clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%); }
+      50% { clip-path: polygon(0 75%, 100% 75%, 100% 100%, 0 100%); }
+      75% { clip-path: polygon(0 15%, 100% 15%, 100% 35%, 0 35%); }
     }
 
-    .subheading {
-      font-size: 1.5rem;
-      color: #aaa;
-      margin: 1rem 0;
+    @keyframes glitch-2 {
+      0%, 100% { clip-path: polygon(0 65%, 100% 65%, 100% 75%, 0 75%); }
+      25% { clip-path: polygon(0 85%, 100% 85%, 100% 100%, 0 100%); }
+      50% { clip-path: polygon(0 0, 100% 0, 100% 15%, 0 15%); }
+      75% { clip-path: polygon(0 50%, 100% 50%, 100% 65%, 0 65%); }
+    }
+
+    /* Status text */
+    .status-text {
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      color: var(--text-secondary);
+      margin: 2rem 0;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
+      font-weight: 300;
+      animation: text-flicker 4s ease-in-out infinite;
+      transform: translateZ(15px);
+      will-change: opacity;
+    }
+
+    .status-subtext {
+      font-size: clamp(0.9rem, 2vw, 1.2rem);
+      color: var(--accent-cyan);
+      margin-bottom: 3rem;
+      opacity: 0.8;
+      transform: translateZ(10px);
+    }
+
+    @keyframes text-flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    /* Terminal window with enhanced effects */
+    .terminal-container {
+      max-width: min(90vw, 600px);
+      margin: 0 auto 3rem;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: translateZ(5px);
     }
 
     .terminal-window {
-      max-width: 90vw;
-      width: 500px;
-      margin: 0 auto 2rem;
-      background: var(--container-bg);
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      font-size: 1rem;
+      border-radius: 16px;
+      padding: 0;
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      overflow: hidden;
+      animation: terminal-glow 3s ease-in-out infinite alternate;
+      position: relative;
+      transform: translateZ(0);
+      will-change: box-shadow;
+    }
+
+    .terminal-window::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(125deg, rgba(0, 212, 255, 0.1) 0%, transparent 40%, transparent 60%, rgba(139, 92, 246, 0.1) 100%);
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0;
+      animation: terminal-shine 8s ease-in-out infinite;
+    }
+
+    @keyframes terminal-glow {
+      0% { box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 20px rgba(0, 212, 255, 0.1);
+      }
+      100% { box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 40px rgba(0, 212, 255, 0.3);
+      }
+    }
+
+    @keyframes terminal-shine {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 0.6; }
+    }
+
+    .terminal-header {
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .terminal-header::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      animation: header-shine 3s ease-in-out infinite;
+    }
+
+    @keyframes header-shine {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      animation: dot-pulse 2s infinite;
+    }
+
+    .dot:nth-child(1) { 
+      background: var(--accent-red); 
+      animation-delay: 0s;
+    }
+    .dot:nth-child(2) { 
+      background: var(--accent-gold); 
+      animation-delay: 0.2s;
+    }
+    .dot:nth-child(3) { 
+      background: var(--accent-cyan); 
+      animation-delay: 0.4s;
+    }
+
+    @keyframes dot-pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.8; }
+    }
+
+    .terminal-title {
+      color: var(--text-primary);
+      font-weight: 600;
+      margin-left: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .terminal-content {
+      padding: 2rem 1.5rem;
+      font-size: clamp(0.8rem, 2vw, 1rem);
       text-align: left;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      box-shadow: 0 5px 25px rgba(0,0,0,0.4);
-      overflow-wrap: break-word;
+      line-height: 1.6;
+      min-height: 200px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .terminal-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+      animation: scanline 4s linear infinite;
+    }
+
+    @keyframes scanline {
+      0% { top: 0; }
+      100% { top: 100%; }
     }
 
     #terminal-code {
       white-space: pre-wrap;
       word-wrap: break-word;
+      font-family: 'Fira Code', monospace;
     }
 
     .cursor {
       display: inline-block;
-      width: 10px;
-      height: 1.2rem;
+      width: 2px;
+      height: 1.2em;
       background: var(--accent-cyan);
-      animation: blink 1s step-end infinite;
-      margin-left: 5px;
+      animation: cursor-blink 1s step-end infinite;
+      margin-left: 3px;
+      vertical-align: baseline;
     }
 
-    @keyframes blink {
-      0%, 100% { background: transparent; }
-      50% { background: var(--accent-cyan); }
+    @keyframes cursor-blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
     }
 
-    .return-link {
-      display: inline-block;
-      padding: 0.8rem 1.6rem;
-      background: linear-gradient(45deg, var(--primary), var(--accent-cyan));
-      color: #000;
-      border: none;
-      border-radius: 10px;
+    /* Enhanced CTA Button */
+    .cta-container {
+      margin-top: 2rem;
+      transform: translateZ(25px);
+    }
+
+    .return-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: var(--text-primary);
       text-decoration: none;
-      font-weight: 700;
       font-family: 'Orbitron', sans-serif;
-      box-shadow: 0 0 15px var(--primary);
-      transition: all 0.3s ease;
+      font-weight: 700;
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      border-radius: 50px;
+      box-shadow: 
+        0 10px 30px rgba(0, 212, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      overflow: hidden;
+      transform: translateZ(0);
+      will-change: transform, box-shadow;
     }
 
-    .return-link:hover {
-      transform: translateY(-4px) scale(1.05);
-      box-shadow: 0 0 25px var(--primary), 0 0 40px var(--accent-cyan);
+    .return-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s;
+    }
+
+    .return-button:hover::before {
+      left: 100%;
+    }
+
+    .return-button:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 
+        0 20px 40px rgba(0, 212, 255, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .return-button:active {
+      transform: translateY(-1px) scale(1.02);
+    }
+
+    .button-icon {
+      font-size: 1.2em;
+      animation: icon-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes icon-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    /* Matrix rain effect in background */
+    .matrix-rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem 0.5rem;
+      }
+
+      .terminal-content {
+        padding: 1.5rem 1rem;
+        min-height: 150px;
+      }
+
+      .terminal-header {
+        padding: 0.8rem 1rem;
+      }
+
+      .return-button {
+        padding: 0.8rem 1.5rem;
+      }
+
+      .status-text {
+        letter-spacing: 2px;
+      }
+      
+      .matrix-rain {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .error-code {
+        margin-bottom: 0.5rem;
+      }
+
+      .status-text {
+        margin: 1rem 0;
+        letter-spacing: 1px;
+      }
+
+      .terminal-content {
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      :root {
+        --bg-primary: #000000;
+        --text-primary: #ffffff;
+        --accent-blue: #00ffff;
+        --border: rgba(255, 255, 255, 0.5);
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Background layers -->
+  <div class="bg-layer grid-overlay"></div>
+  <div class="bg-layer particles" id="particles"></div>
+  <canvas class="matrix-rain" id="matrixRain"></canvas>
+
   <div class="container">
-    <div class="glitch-text" data-text="404">404</div>
-    <p class="subheading">SIGNAL LOST</p>
-    <p>Bot is still running...</p>
-    <div class="terminal-window">
-      <code id="terminal-code"></code><span class="cursor"></span>
+    <!-- Main error display -->
+    <h1 class="error-code" data-text="404">404</h1>
+    <p class="status-text">Signal Lost</p>
+    <p class="status-subtext">Connection terminated • Route not found</p>
+
+    <!-- Terminal window -->
+    <div class="terminal-container">
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          <div class="terminal-title">system.diagnostics</div>
+        </div>
+        <div class="terminal-content">
+          <code id="terminal-code"></code><span class="cursor"></span>
+        </div>
+      </div>
     </div>
-    <a href="/files" class="return-link">FILE MANAGER</a>
+
+    <!-- Call to action -->
+    <div class="cta-container">
+      <a href="/files" class="return-button">
+        <span class="button-icon">⚡</span>
+        <span>Return to Base</span>
+      </a>
+    </div>
   </div>
+
   <script>
+    // Terminal typing animation
     const terminalCodeElement = document.getElementById('terminal-code');
-    const lines = [
-      { text: "> Establishing connection to requested route...", color: "#aaa" },
-      { text: "> Route: /the-page-you-want", color: "#e0e0e0" },
-      { text: "> Sending SYN packet...", color: "#aaa" },
-      { text: "> ...", delay: 500 },
-      { text: "> ...", delay: 500 },
-      { text: "> ERROR: No ACK received.", color: "#ff3c3c" },
-      { text: "> STATUS: Route not found in datalog.", color: "#ff3c3c" },
-      { text: "> RECOMMENDATION: Verify coordinates and try again.", color: "#00ffff" },
+    const diagnosticLines = [
+      { text: "> Initiating diagnostic protocol...", color: "#b0b3b8", delay: 100 },
+      { text: "> Scanning requested route: /the-page-you-want", color: "#ffffff" },
+      { text: "> Establishing secure connection...", color: "#b0b3b8" },
+      { text: "> Sending SYN packet... ", color: "#b0b3b8", inline: true },
+      { text: "[SENT]", color: "#00fff9" },
+      { text: "> Waiting for ACK response...", color: "#b0b3b8" },
+      { text: "> Timeout after 5.000s", color: "#ffd700", delay: 1000 },
+      { text: "> Retrying connection... ", color: "#b0b3b8", inline: true, delay: 500 },
+      { text: "[FAILED]", color: "#ff4757" },
+      { text: "> ERROR: Route does not exist in current dataspace", color: "#ff4757" },
+      { text: "> STATUS: 404 - Resource not found", color: "#ff4757" },
+      { text: "> RECOMMENDATION: Verify coordinates and retry", color: "#00fff9" },
+      { text: "> Diagnostic complete.", color: "#8b5cf6", delay: 300 },
     ];
+
     let lineIndex = 0, charIndex = 0;
-    function type() {
-      if (lineIndex >= lines.length) return;
-      const current = lines[lineIndex];
-      const char = current.text.charAt(charIndex);
-      if (charIndex < current.text.length) {
-        const span = document.createElement('span');
-        if (current.color) span.style.color = current.color;
-        span.textContent = char;
-        terminalCodeElement.appendChild(span);
+
+    function typeTerminalText() {
+      if (lineIndex >= diagnosticLines.length) return;
+
+      const currentLine = diagnosticLines[lineIndex];
+      const currentChar = currentLine.text.charAt(charIndex);
+
+      if (charIndex === 0 && currentLine.color) {
+        const lineSpan = document.createElement('span');
+        lineSpan.style.color = currentLine.color;
+        lineSpan.dataset.lineIndex = lineIndex;
+        terminalCodeElement.appendChild(lineSpan);
+      }
+
+      if (charIndex < currentLine.text.length) {
+        const currentLineElement = terminalCodeElement.querySelector(`[data-line-index="${lineIndex}"]`);
+        if (currentLineElement) {
+          currentLineElement.textContent += currentChar;
+        }
         charIndex++;
-        setTimeout(type, 30);
+        setTimeout(typeTerminalText, Math.random() * 50 + 20);
       } else {
-        terminalCodeElement.appendChild(document.createElement('br'));
+        if (!currentLine.inline) {
+          terminalCodeElement.appendChild(document.createElement('br'));
+        }
         charIndex = 0;
         lineIndex++;
-        setTimeout(type, current.delay || 100);
+        setTimeout(typeTerminalText, currentLine.delay || 150);
       }
     }
-    document.addEventListener('DOMContentLoaded', type);
+
+    // Create floating particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = window.innerWidth < 768 ? 20 : 40;
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 8 + 's';
+        particle.style.animationDuration = (Math.random() * 8 + 6) + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Matrix rain effect
+    function setupMatrixRain() {
+      const canvas = document.getElementById('matrixRain');
+      const ctx = canvas.getContext('2d');
+      
+      // Set canvas size
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      // Matrix characters
+      const matrixChars = "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const fontSize = 14;
+      const columns = canvas.width / fontSize;
+      
+      // Drops array
+      const drops = [];
+      for (let i = 0; i < columns; i++) {
+        drops[i] = 1;
+      }
+      
+      // Draw function
+      function draw() {
+        // Semi-transparent black to create trail effect
+        ctx.fillStyle = 'rgba(10, 10, 15, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#00fff9';
+        ctx.font = `${fontSize}px 'Fira Code', monospace`;
+        
+        for (let i = 0; i < drops.length; i++) {
+          const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+          
+          // Reset drop if it reaches bottom with random chance
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          
+          drops[i]++;
+        }
+      }
+      
+      // Animation
+      if (window.innerWidth >= 768) {
+        setInterval(draw, 33);
+      }
+    }
+
+    // Parallax effect on mouse move
+    function setupParallax() {
+      const container = document.querySelector('.container');
+      const gridOverlay = document.querySelector('.grid-overlay');
+      
+      document.addEventListener('mousemove', (e) => {
+        if (window.innerWidth < 768) return; // Disable on mobile
+        
+        const x = (e.clientX - window.innerWidth / 2) / 25;
+        const y = (e.clientY - window.innerHeight / 2) / 25;
+        
+        container.style.transform = `translateY(0) scale(1) rotateY(${x}deg) rotateX(${-y}deg)`;
+        gridOverlay.style.transform = `translate(${-x}px, ${-y}px)`;
+      });
+      
+      document.addEventListener('mouseleave', () => {
+        container.style.transform = 'translateY(0) scale(1) rotateY(0deg) rotateX(0deg)';
+        gridOverlay.style.transform = 'translate(0, 0)';
+      });
+    }
+
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Start terminal animation after a short delay
+      setTimeout(typeTerminalText, 800);
+      
+      // Create background particles
+      createParticles();
+      
+      // Setup matrix rain effect
+      setupMatrixRain();
+      
+      // Setup parallax effect
+      setupParallax();
+
+      // Add keyboard navigation
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          const returnButton = document.querySelector('.return-button');
+          if (returnButton) {
+            returnButton.click();
+          }
+        }
+      });
+    });
+
+    // Performance optimization: Reduce particles on mobile
+    window.addEventListener('resize', function() {
+      const particles = document.querySelectorAll('.particle');
+      const shouldShowParticles = window.innerWidth >= 768;
+      
+      particles.forEach(particle => {
+        particle.style.display = shouldShowParticles ? 'block' : 'none';
+      });
+      
+      // Resize matrix canvas
+      const matrixCanvas = document.getElementById('matrixRain');
+      if (matrixCanvas) {
+        matrixCanvas.width = window.innerWidth;
+        matrixCanvas.height = window.innerHeight;
+      }
+    });
   </script>
 </body>
 </html>
