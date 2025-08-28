@@ -472,7 +472,7 @@ async def create_image(update:Update, content:ContextTypes.DEFAULT_TYPE, api, pr
                 api_key = random.choice(temp_api)
                 client = genai.Client(api_key=api)
                 response = await client.aio.models.generate_content(
-                    model = "gemini-2.5-flash-image-preview",
+                    model = "gemini-2.0-flash-preview-image-generation",
                     contents = prompt,
                     config = types.GenerateContentConfig(
                         response_modalities=["TEXT", "IMAGE"],
@@ -500,7 +500,8 @@ async def create_image(update:Update, content:ContextTypes.DEFAULT_TYPE, api, pr
                     break
                 else:
                     raise Exception
-            except:
+            except Exception as e:
+                print(e)
                 temp_api.remove(api_key)
 
         if not response:
