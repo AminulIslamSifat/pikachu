@@ -472,7 +472,7 @@ async def create_image(update:Update, content:ContextTypes.DEFAULT_TYPE, api, pr
                 api_key = random.choice(temp_api)
                 client = genai.Client(api_key=api)
                 response = await client.aio.models.generate_content(
-                    model = "gemini-2.0-flash-preview-image-generation",
+                    model = "gemini-2.5-flash-image-preview",
                     contents = prompt,
                     config = types.GenerateContentConfig(
                         response_modalities=["TEXT", "IMAGE"],
