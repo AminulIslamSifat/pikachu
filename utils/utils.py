@@ -1,6 +1,7 @@
 import time
 from telegram import Update
 from telegram.ext import ContextTypes
+from telegram.error import TimedOut
 import asyncio
 from utils.config import(
     short_term_limit,
@@ -88,30 +89,38 @@ async def send_to_channel(update: Update, content : ContextTypes.DEFAULT_TYPE, c
         await content.bot.send_message(chat_id=chat_id, text=message)
     except Exception as e:
         print(f"Error in send_to_channel function.\n\nError Code - {e}")
-        await send_to_channel(update, content, chat_id, message)
 
 
 #function to retry in case of TimeOut Error
 async def safe_send(update:Update, content:ContextTypes.DEFAULT_TYPE, message, msg_obj):
-    try:
+    for retry in range(5):
         try:
-            if msg_obj:
-                await msg_obj.edit_text(message, parse_mode="Markdown")
-            else:
-                await update.message.reply_text(message, parse_mode="Markdown")
-        except:
             try:
                 if msg_obj:
-                    await msg_obj.edit_text(add_escape_character(message), parse_mode="MarkdownV2")
+                    await msg_obj.edit_text(message, parse_mode="Markdown")
+                    return
                 else:
-                    await update.message.reply_text(add_escape_character(message), parse_mode="MarkdownV2")
+                    await update.message.reply_text(message, parse_mode="Markdown")
+                    return
             except:
-                if msg_obj:
-                    await msg_obj.edit_text(message)
-                else:
-                    await update.message.reply_text(message)
-    except Exception as e:
-        print(f"Message sending failed fron safe_send function. Error code - {e}")
+                try:
+                    if msg_obj:
+                        await msg_obj.edit_text(add_escape_character(message), parse_mode="MarkdownV2")
+                        return
+                    else:
+                        await update.message.reply_text(add_escape_character(message), parse_mode="MarkdownV2")
+                        return
+                except:
+                    if msg_obj:
+                        await msg_obj.edit_text(message)
+                        return
+                    else:
+                        await update.message.reply_text(message)
+                        return
+        except TimedOut:
+            print(f"Time out error, Retrying for the {retry+1} times")
+        except Exception as e:
+            print(f"Message sending failed fron safe_send function. Error code - {e}")
 
 
 #function to get settings
@@ -146,7 +155,7 @@ async def get_settings(user_id):
         return row
     except Exception as e:
         print(f"Error in get_settings fucntion.\n\nError Code - {e}")
-        return (999999, "XX", 1, 0, 0.7, 0, 4)
+        return (999999, "XX", "gemini-2.5-flash", 0, 0.7, 0, "data/persona/pikachu.shadow")
 
 
 

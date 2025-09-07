@@ -64,7 +64,8 @@ from fastapi import Request, Response
 
 
 #setting this to alter defult connection pool size and timeout for telegram
-tg_request = HTTPXRequest(connection_pool_size=50, pool_timeout=30)
+tg_request = HTTPXRequest(connection_pool_size=50, pool_timeout=30, read_timeout=60.0, write_timeout=60.0)
+
 
 
 
