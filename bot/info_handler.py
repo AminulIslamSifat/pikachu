@@ -204,7 +204,7 @@ async def resources_handler(update:Update, content:ContextTypes.DEFAULT_TYPE):
     try:
         keyboard = [
             [InlineKeyboardButton("Drive", url="https://drive.google.com/drive/folders/1xbyCdj3XQ9AsCCF8ImI13HCo25JEhgUJ"), InlineKeyboardButton("Syllabus", url="https://drive.google.com/file/d/1pVF40-E0Oe8QI-EZp9S7udjnc0_Kquav/view?usp=drive_link")],
-            [InlineKeyboardButton("Orientation Files", url = "https://drive.google.com/drive/folders/10_-xTV-FsXnndtDiw_StqH2Zy9tQcWq0"), InlineKeyboardButton("Lab Cover Page", url="https://ruet-cover-page.github.io/")],
+            [InlineKeyboardButton("Cover Page", url = "https://coverpage-c.vercel.app/"), InlineKeyboardButton("Lab Cover Page", url="https://ruet-cover-page.github.io/")],
             [InlineKeyboardButton("G. Classroom Code", callback_data="g_classroom"), InlineKeyboardButton("All Websites", callback_data="c_all_websites")],
             [InlineKeyboardButton("Cancel", callback_data="cancel")]
         ]
