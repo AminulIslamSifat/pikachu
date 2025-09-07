@@ -96,7 +96,7 @@ async def delete_n_convo(user_id, n):
                 {"$set" : {"conversation" : data}}
             )
 
-        async with aiofiles.open(f"data/Conversation/conversation-{user_id}.txt", "rb") as file:
+        async with aiofiles.open(f"data/Conversation/conversation-{user_id}.shadow", "rb") as file:
             conv_data = ciphers.decrypt(nonce, await file.read(), None).decode("utf-8")
             if not paths:
                 return
@@ -124,7 +124,7 @@ async def create_memory(update:Update, content:ContextTypes.DEFAULT_TYPE, api, u
             async with aiofiles.open("data/persona/memory_persona.shadow", "rb") as f:
                 instruction = g_ciphers.decrypt(secret_nonce, await f.read(), None).decode("utf-8")
             data = ""
-            async with aiofiles.open(f"data/memory/memory-{user_id}.shadow", "rb", encoding = "utf-8") as f:
+            async with aiofiles.open(f"data/memory/memory-{user_id}.shadow", "rb") as f:
                 pre_mem = await f.read()
                 if pre_mem:
                     try:
@@ -145,9 +145,9 @@ async def create_memory(update:Update, content:ContextTypes.DEFAULT_TYPE, api, u
             group_id = user_id
             async with aiofiles.open("data/persona/memory_persona.txt", "rb") as f:
                 instruction = g_ciphers.decrypt(secret_nonce, await f.read(), None).decode("utf-8")
-            async with aiofiles.open(f"data/memory/memory-group.txt", "r", encoding = "utf-8") as f:
+            async with aiofiles.open(f"data/memory/memory-group.txt", "r") as f:
                 data = "***PREVIOUS MEMORY***\n\n" + await f.read() + "\n\n***END OF MEMORY***\n\n"
-            async with aiofiles.open(f"data/Conversation/conversation-group.txt", "r", encoding = "utf-8") as f:
+            async with aiofiles.open(f"data/Conversation/conversation-group.txt", "r") as f:
                 data += "\n\n***CONVERSATION HISTORY***\n\n" + await f.read() + "\n\n***END OF CONVERSATION***\n\n"
         client = genai.Client(api_key=api)
         prompt = (
@@ -183,7 +183,7 @@ async def create_memory(update:Update, content:ContextTypes.DEFAULT_TYPE, api, u
                 await delete_n_convo(user_id, 15)
             elif user_id < 0:
                 group_id = user_id
-                async with aiofiles.open(f"data/memory/memory-group.txt", "a+", encoding="utf-8") as f:
+                async with aiofiles.open(f"data/memory/memory-group.txt", "a+") as f:
                     await f.write(response.text)
                     await f.seek(0)
                     memory = await f.read()
