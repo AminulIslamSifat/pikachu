@@ -67,9 +67,6 @@ async def load_gemini_api():
     try:
         api_list = (await mdb["API"].find_one({}))["gemini_api"]
         api_list = tuple(api_list)
-        with open("api.txt", "w") as file:
-            for api in api_list:
-                file.write(api + "\n")
         return api_list
     except Exception as e:
         print(f"Error lading gemini API. \n\nError Code -{e}")

@@ -37,7 +37,11 @@ async def send_message(update : Update, content : ContextTypes.DEFAULT_TYPE, res
         if not response:
             await message.reply_text("Failed to precess your request. Try again later.")
             return
-        message_to_send = response.text if hasattr(response, "text") else str(response)
+        if hasattr(response, 'parts'):
+            text_parts = [part.text for part in response.parts if hasattr(part, 'text') and part.text is not None]
+            message_to_send = "".join(text_parts)
+        else:
+            message_to_send = response.text if hasattr(response, "text") else str(response)
         if len(message_to_send) > 4080:
             message_chunks = [message_to_send[i:i+4080] for i in range(0, len(message_to_send), 4080)]
             for i,msg in enumerate(message_chunks):

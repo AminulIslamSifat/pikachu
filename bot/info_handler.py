@@ -1,3 +1,4 @@
+from ast import parse
 from datetime import(
     datetime,
     timedelta
@@ -90,6 +91,11 @@ async def get_ct_data():
 #function to handle ct command
 async def handle_ct(update:Update, content:ContextTypes.DEFAULT_TYPE) -> None:
     try:
+        keyboard = [
+            [InlineKeyboardButton("Cover Page", url="https://coverpage-c.vercel.app/")]
+        ]
+        markup = InlineKeyboardMarkup(keyboard)
+
         ct_data = await get_ct_data()
         if ct_data == None:
             await update.message.reply_text("Couldn't Connect to FIREBASE URL. Try again later.")
@@ -127,24 +133,37 @@ async def handle_ct(update:Update, content:ContextTypes.DEFAULT_TYPE) -> None:
             # Format message
             
             message = ["📅 <b> Current Schedule </b>"]
+            c_message = []
+
             for i, ct in enumerate(upcoming):
                 days_text = f"{ct['days_left']+1} days"
                 date_str = ct['date'].strftime("%a, %d %b")
 
-                if i == 0:
-                    message.append(f"\n⏰ <b>NEXT:</b>\n<b> {ct['subject']}</b>")
+                cover_type = ["Assignment", "Lab Report", "Presentation"]
+
+                if ct["type"] not in cover_type:
+                    if i == 0:
+                        message.append(f"\n⏰ <b>NEXT:</b>\n<b> {ct['subject']}</b>")
+                    else:
+                        message.append(f"\n📅 <b>{ct['subject']}</b>")
+                    
+                    
+                    message.append(
+                        f"❓ <u>{ct['type']}</u>\n"
+                        f"🗓️ {date_str} ({days_text})\n"
+                        f"👨‍🏫 {ct['teacher']}\n"
+                        f"📖 {ct['syllabus']}"
+                    )
                 else:
-                    message.append(f"\n📅 <b>{ct['subject']}</b>")
-                
-
-                message.append(
-                    f"❓ <u>{ct['type']}</u>\n"
-                    f"🗓️ {date_str} ({days_text})\n"
-                    f"👨‍🏫 {ct['teacher']}\n"
-                    f"📖 {ct['syllabus']}"
-                )
-
+                    c_message.append(
+                        f"❓ <u>{ct['type']}</u>\n"
+                        f"🗓️ {date_str} ({days_text})\n"
+                        f"👨‍🏫 {ct['teacher']}\n"
+                        f"📖 {ct['syllabus']}"
+                    )
+            
             await update.message.reply_text("\n".join(message), parse_mode='HTML')
+            await update.message.reply_text("\n".join(c_message), parse_mode="HTML", reply_markup=markup)
     except Exception as e:
         print(f"Error in handle_ct function. \n\nError Code - {e}")
         await update.message.reply_text(f"Internal Error\n {e}. \nPlease contact admin or try again later.")

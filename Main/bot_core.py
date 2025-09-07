@@ -139,7 +139,7 @@ async def main():
 
 
         # --- WEBHOOK MODE (Currently Active) ---
-        #This runs the bot with webhooks.
+        # This runs the bot with webhooks.
         async with bot_app:
             await bot_app.start()
             # Set webhook
@@ -166,7 +166,7 @@ async def main():
             await bot_app.bot.delete_webhook()
             await bot_app.stop()
 
-        #--- POLLING MODE (Currently Inactive) ---
+        # --- POLLING MODE (Currently Inactive) ---
 
         # await bot_app.initialize()
         # await bot_app.start()
