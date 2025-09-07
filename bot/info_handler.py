@@ -205,7 +205,7 @@ async def resources_handler(update:Update, content:ContextTypes.DEFAULT_TYPE):
         keyboard = [
             [InlineKeyboardButton("Drive", url="https://drive.google.com/drive/folders/1xbyCdj3XQ9AsCCF8ImI13HCo25JEhgUJ"), InlineKeyboardButton("Syllabus", url="https://drive.google.com/file/d/1pVF40-E0Oe8QI-EZp9S7udjnc0_Kquav/view?usp=drive_link")],
             [InlineKeyboardButton("Cover Page Website", url = "https://coverpage-c.vercel.app/")],
-            [InlineKeyboardButton("Cover Page Githunb", url="https://ruet-cover-page.github.io/")],
+            [InlineKeyboardButton("Cover Page Github", url="https://ruet-cover-page.github.io/")],
             [InlineKeyboardButton("G. Classroom Code", callback_data="g_classroom"), InlineKeyboardButton("All Websites", callback_data="c_all_websites")],
             [InlineKeyboardButton("Cancel", callback_data="cancel")]
         ]
