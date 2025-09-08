@@ -44,6 +44,7 @@ from ext.user_content_tools import(
     save_conversation,
     reset
 )
+from telegram.error import TimedOut
 
 
 
@@ -204,12 +205,17 @@ async def handle_location(update:Update, content:ContextTypes.DEFAULT_TYPE):
 
 #function to put media request in a queue
 async def handle_media(update:Update, content:ContextTypes.DEFAULT_TYPE) -> None:
-    try:
-        if await is_ddos(update, content, update.effective_user.id):
+    for retry in range(5):
+        try:
+            if await is_ddos(update, content, update.effective_user.id):
+                return
+            await media_queue.put((update, content))
             return
-        await media_queue.put((update, content))
-    except Exception as e:
-        print(f"Error in handle_media function. \n\nError code - {e}")
+        except TimedOut:
+            print(f"Timeout, Retrying for the {retry+1} times.")
+        except Exception as e:
+            print(f"Error in handle_media function. \n\nError code - {e}")
+            return
 
 
 
