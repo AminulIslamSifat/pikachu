@@ -1,4 +1,3 @@
-from sympy import im
 from telegram import (
     Update,
     ReplyKeyboardMarkup,
