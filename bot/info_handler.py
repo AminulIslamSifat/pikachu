@@ -163,7 +163,8 @@ async def handle_ct(update:Update, content:ContextTypes.DEFAULT_TYPE) -> None:
                     )
             
             await update.message.reply_text("\n".join(message), parse_mode='HTML')
-            await update.message.reply_text("\n".join(c_message), parse_mode="HTML", reply_markup=markup)
+            if c_message:
+                await update.message.reply_text("\n".join(c_message), parse_mode="HTML", reply_markup=markup)
     except Exception as e:
         print(f"Error in handle_ct function. \n\nError Code - {e}")
         await update.message.reply_text(f"Internal Error\n {e}. \nPlease contact admin or try again later.")

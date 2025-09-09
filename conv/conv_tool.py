@@ -1,3 +1,4 @@
+from sympy import im
 from telegram import (
     Update,
     ReplyKeyboardMarkup,
@@ -62,25 +63,33 @@ from utils.db import (
 )
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 import aiofiles
+from telegram.error import TimedOut
+
+
+
 
 
 
 
 #function for the command api
 async def api(update : Update, content : ContextTypes.DEFAULT_TYPE) -> None:
-    try:
-        if update.message.chat.type != "private":
-            await update.message.reply_text("This function is only available in private chat.")
+    for retry in range(5):
+        try:
+            if update.message.chat.type != "private":
+                await update.message.reply_text("This function is only available in private chat.")
+                return
+            keyboard = [[InlineKeyboardButton("cancel", callback_data="cancel_conv")]]
+            markup = InlineKeyboardMarkup(keyboard)
+            async with aiofiles.open("data/info/getting_api.shadow", "rb") as f:
+                data = g_ciphers.decrypt(secret_nonce, await f.read(), None).decode("utf-8")
+                await update.message.reply_text(data, reply_markup=markup)
+            return 1
+        except TimedOut:
+            print(f"Timed out error. Retrying for the {retry+1} times")
+        except Exception as e:
+            print(f"Error in api function.\nError Code - {e}")
+            await send_to_channel(update, content, channel_id, f"Error in api function \n\nError Code -{e}")
             return
-        keyboard = [[InlineKeyboardButton("cancel", callback_data="cancel_conv")]]
-        markup = InlineKeyboardMarkup(keyboard)
-        async with aiofiles.open("data/info/getting_api.shadow", "rb") as f:
-            data = g_ciphers.decrypt(secret_nonce, await f.read(), None).decode("utf-8")
-            await update.message.reply_text(data, reply_markup=markup)
-        return 1
-    except Exception as e:
-        print(f"Error in api function.\nError Code - {e}")
-        await send_to_channel(update, content, channel_id, f"Error in api function \n\nError Code -{e}")
 
 
 #function to handle api
