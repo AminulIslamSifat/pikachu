@@ -1,6 +1,6 @@
 [project]
 name = "Pikachu"
-version = "2.0.1"
+version = "3.9.0"
 description = "A telegram bot project for RUET CSE SECTION C"
 readme = "README.md"
 requires-python = ">=3.8"
