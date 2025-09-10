@@ -266,6 +266,9 @@ async def button_handler(update:Update, content:ContextTypes.DEFAULT_TYPE) -> No
             markup = InlineKeyboardMarkup(keyboard)
             await query.edit_message_text(add_escape_character("Notice will send message in this format\n```NOTICE\n<Your Message>\n```\nNormal will send message as bot response.\n\nChoose an option:"), reply_markup=markup, parse_mode="MarkdownV2")
 
+        elif query.data == "syllabus":
+            with open("user_media/syllabus.pdf", "rb") as syllabus:
+                await content.bot.send_document(chat_id=user_id, document=syllabus, caption="First Year Odd Semester Final Exam Syllabus")
 
     except Exception as e:
         print(f"Error in button_handler function.\n\nError Code -{e}")

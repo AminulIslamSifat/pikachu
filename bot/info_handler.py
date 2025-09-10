@@ -91,10 +91,15 @@ async def get_ct_data():
 #function to handle ct command
 async def handle_ct(update:Update, content:ContextTypes.DEFAULT_TYPE) -> None:
     try:
-        keyboard = [
+        c_keyboard = [
             [InlineKeyboardButton("Cover Page", url="https://coverpage-c.vercel.app/")]
         ]
-        markup = InlineKeyboardMarkup(keyboard)
+        c_markup = InlineKeyboardMarkup(c_keyboard)
+
+        e_keyboard = [
+            [InlineKeyboardButton("Syllabus", callback_data="syllabus")]
+        ]
+        e_markup = InlineKeyboardMarkup(e_keyboard)
 
         ct_data = await get_ct_data()
         if ct_data == None:
@@ -134,12 +139,13 @@ async def handle_ct(update:Update, content:ContextTypes.DEFAULT_TYPE) -> None:
             
             message = ["📅 <b> Current Schedule </b>"]
             c_message = []
+            e_message = []
 
             for i, ct in enumerate(upcoming):
                 days_text = f"{ct['days_left']+1} days"
                 date_str = ct['date'].strftime("%a, %d %b")
 
-                cover_type = ["Assignment", "Lab Report", "Presentation"]
+                cover_type = ["Assignment", "Lab Report", "Presentation", "Semester Final Exam"]
 
                 if ct["type"] not in cover_type:
                     if i == 0:
@@ -154,7 +160,24 @@ async def handle_ct(update:Update, content:ContextTypes.DEFAULT_TYPE) -> None:
                         f"👨‍🏫 {ct['teacher']}\n"
                         f"📖 {ct['syllabus']}"
                     )
+                elif ct["type"] == "Semester Final Exam":
+                    if i == 0:
+                        e_message.append(f"\n⏰ <b>NEXT:</b>\n<b> {ct['subject']}</b>")
+                    else:
+                        e_message.append(f"\n📅 <b>{ct['subject']}</b>")
+
+                    e_message.append(
+                        f"❓ <u>{ct['type']}</u>\n"
+                        f"🗓️ {date_str} ({days_text})\n"
+                        f"👨‍🏫 {ct['teacher']}\n"
+                    )
+
                 else:
+                    if i == 0:
+                        c_message.append(f"\n⏰ <b>NEXT:</b>\n<b> {ct['subject']}</b>")
+                    else:
+                        c_message.append(f"\n📅 <b>{ct['subject']}</b>")
+                    
                     c_message.append(
                         f"❓ <u>{ct['type']}</u>\n"
                         f"🗓️ {date_str} ({days_text})\n"
@@ -164,7 +187,9 @@ async def handle_ct(update:Update, content:ContextTypes.DEFAULT_TYPE) -> None:
             
             await update.message.reply_text("\n".join(message), parse_mode='HTML')
             if c_message:
-                await update.message.reply_text("\n".join(c_message), parse_mode="HTML", reply_markup=markup)
+                await update.message.reply_text("\n".join(c_message), parse_mode="HTML", reply_markup=c_markup)
+            if e_message:
+                await update.message.reply_text("\n".join(e_message), parse_mode="HTML", reply_markup=e_markup)
     except Exception as e:
         print(f"Error in handle_ct function. \n\nError Code - {e}")
         await update.message.reply_text(f"Internal Error\n {e}. \nPlease contact admin or try again later.")
