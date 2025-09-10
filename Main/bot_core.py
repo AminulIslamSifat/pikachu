@@ -79,7 +79,7 @@ tg_request = HTTPXRequest(connection_pool_size=50, pool_timeout=60, read_timeout
 async def main():
     try:
         await db_utils.initialize_bot()                     #initializing the database
-        #await load_all_files()                              #loading all the files
+        await load_all_files()                              #loading all the files
         await db_utils.populate_db_caches()                 #Loading all data into ram
 
         TOKENs = await db_utils.get_token()                   #getting the bot token
