@@ -376,7 +376,7 @@ async def get_group_data(update:Update, content:ContextTypes.DEFAULT_TYPE, user_
             data += str(await get_ct_data())
             data += "***END OF CT DATA***\n\n"
             data += """Use this format to represent CT data
-            📚 Upcoming CTs
+            📚 Upcoming <Schedule Type>
 
             ⏰ NEXT: <Subject>
             🗓️ <date>

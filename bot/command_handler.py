@@ -60,7 +60,7 @@ async def start(update : Update, content : ContextTypes.DEFAULT_TYPE) -> None:
 
             for path in paths:
                 if not os.path.exists(path):
-                    async with aiofiles.open(path, "wb", encoding = "utf-8") as f:
+                    async with aiofiles.open(path, "wb") as f:
                         pass
             if user_id in all_users:
                 await update.message.reply_text("Hi there, I am your personal assistant. If you need any help feel free to ask me.", reply_markup=reply_markup)

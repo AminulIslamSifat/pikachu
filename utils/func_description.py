@@ -123,7 +123,7 @@ get_group_data_function ={
 
 get_ct_data_function = {
     "name" : "get_ct_data",
-    "description" : """Fetch data of upcoming class test or CT""",
+    "description" : """Fetch data of upcoming class test (CT), exam, lab report submission, assingment, Board viva, Lab final, quiz, homework and presentation schedule. It fetches all the upcoming schedule data.""",
     "parameters" : {
         "type" :"object",
         "properties" : {
