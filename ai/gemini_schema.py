@@ -367,7 +367,7 @@ async def get_group_data(update:Update, content:ContextTypes.DEFAULT_TYPE, user_
         
         if func_name == "get_group_data":
             data = "****TRAINING DATA****\n\n"
-            async with asyncio.open("data/info/group_training_data.shadow", "rb") as f:
+            async with aiofiles.open("data/info/group_training_data.shadow", "rb") as f:
                 data += g_ciphers.decrypt(secret_nonce, await f.read(), None).decode("utf-8")
             data += "\n\n****END OF TRAINIG DATA****\n\n"
             data += user_message
