@@ -38,7 +38,7 @@ import aiosqlite
 
 
 
-mdb = AsyncIOMotorClient(mongo_url)["phantom_bot"]
+mdb = AsyncIOMotorClient(mongo_url)["pikachu"]
 
 
 

@@ -7,7 +7,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 
 
-mdb = AsyncIOMotorClient(mongo_url)["phantom_bot"]
+mdb = AsyncIOMotorClient(mongo_url)["pikachu"]
 
 
 # Global variables

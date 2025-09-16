@@ -69,7 +69,8 @@ premium_media_size_limit = 60
 
 #Connecting to database as sync
 try:
-    db = MongoClient(mongo_url, server_api=ServerApi("1"))["phantom_bot"]
+    client = MongoClient(mongo_url, server_api=ServerApi("1"))
+    db = client["pikachu"]
 except:
     db = None
 
@@ -77,7 +78,7 @@ except:
 
 #Connecting to database as async
 try:
-    mdb = AsyncIOMotorClient(mongo_url)["phantom_bot"]
+    mdb = AsyncIOMotorClient(mongo_url)["pikachu"]
 except:
     mdb = None
 

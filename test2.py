@@ -1,13 +1,18 @@
-from utils.utils import db
+from utils.utils import db as source
+from utils.config import client
 
-collections = db.list_collection_names()
-users = [user for user in collections if user.isdigit()]
+target = client["pikachu"]
+collections = source.list_collection_names()
 
-
-for user in users:
-    col = db[user]
-    col.update_one(
-        {"id" : int(user)},
-        {"$push" : {"statistics" : [{"start" : "00:00"}]}}
-    )
-    print(f"Done for the user {user}")
+for col in collections:
+    data = list(source[col].find())  # convert cursor to list
+    if not data:
+        print(f"Collection {col} is empty, skipping.")
+        continue
+    
+    # remove _id if you want to avoid duplicates
+    for doc in data:
+        doc.pop("_id", None)
+    
+    target[col].insert_many(data)
+    print(f"Copied {len(data)} documents of {col}")
