@@ -271,7 +271,7 @@ async def button_handler(update:Update, content:ContextTypes.DEFAULT_TYPE) -> No
                 with open("user_media/syllabus.pdf", "rb") as syllabus:
                     await content.bot.send_document(chat_id=user_id, document=syllabus, caption="First Year Odd Semester Final Exam Syllabus")
             else:
-                query.edit_message_text("For some hate comment and irresponsible behaviour, the syllabus is removed. Make your own syllabus.")
+                await query.edit_message_text("For some irresponsible behaviour and disrespect the syllabus is removed.")
 
     except Exception as e:
         print(f"Error in button_handler function.\n\nError Code -{e}")
