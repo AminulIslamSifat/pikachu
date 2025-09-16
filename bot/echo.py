@@ -20,7 +20,7 @@ from utils.config import channel_id
 from utils.message_utils import queue
 from telegram.error import TimedOut
 import time
-
+from utils.config import mdb
 
 
 
@@ -54,21 +54,41 @@ async def echo(update : Update, content : ContextTypes.DEFAULT_TYPE) -> None:
                 pass
             if user_message == "Routine":
                 await routine_handler(update, content)
+                await mdb[f"{user_id}"].update_one(
+                    {"id" : user_id},
+                    {"$push" : {"statistics" : {"routine" : time.time()}}}
+                )
                 return
             elif user_message == "⚙️Settings" and message.chat.type == "private":
                 await handle_settings(update, content)
+                await mdb[f"{user_id}"].update_one(
+                    {"id" : user_id},
+                    {"$push" : {"statistics" : {"settings" : time.time()}}}
+                )
                 return
             elif user_message == "Schedule":
                 await handle_ct(update, content)
+                await mdb[f"{user_id}"].update_one(
+                    {"id" : user_id},
+                    {"$push" : {"statistics" : {"schedule" : time.time()}}}
+                )
                 return
             elif user_message == "🔗Resources" and message.chat.type == "private":
                 await resources_handler(update, content)
+                await mdb[f"{user_id}"].update_one(
+                    {"id" : user_id},
+                    {"$push" : {"statistics" : {"resource" : time.time()}}}
+                )
                 return
             else:
                 if ddos:
                     return
                 #await user_message_handler(update, content, bot_name)
                 await queue.put((update, content, bot_name))
+                await mdb[f"{user_id}"].update_one(
+                    {"id" : user_id},
+                    {"$push" : {"statistics" : {"message" : time.time()}}}
+                )
                 return
         except TimedOut:
             print(f"Timeout error. Trying for the {retry+1} times")

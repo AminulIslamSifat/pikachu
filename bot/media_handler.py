@@ -67,7 +67,10 @@ async def media_worker():
             user_id = update.effective_user.id
             lock = media_user_locks[user_id]
             async with lock:
-                await process_media_update(update, content)
+                try:
+                    await process_media_update(update, content)
+                except:
+                    media_queue.task_done()
         finally:
             media_queue.task_done()
 

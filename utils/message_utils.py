@@ -79,7 +79,10 @@ async def handle_all_messages():
             user_id = update.effective_user.id
             lock = user_locks[user_id]
             async with lock:
-                await user_message_handler(update, content, bot_name)
+                try:
+                    await user_message_handler(update, content, bot_name)
+                except:
+                    queue.task_done()
         finally:
             queue.task_done()
 
