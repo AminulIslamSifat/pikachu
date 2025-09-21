@@ -4,7 +4,6 @@ requests
 python-telegram-bot
 google-genai
 telegram
-pyrebase4
 gunicorn
 cryptography
 pillow

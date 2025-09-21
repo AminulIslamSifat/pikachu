@@ -178,7 +178,7 @@ async def button_handler(update:Update, content:ContextTypes.DEFAULT_TYPE) -> No
 
         elif query.data == "c_all_websites":
             keyboard = [
-                [InlineKeyboardButton("CSE 24 Website", url="https://csearchive.vercel.app/")],
+                [InlineKeyboardButton("CSE 24 Website", url="http://ruetcsearchive.app/")],
                 [InlineKeyboardButton("Facebook", url="https://www.facebook.com/profile.php?id=61574730479807"), InlineKeyboardButton("Profiles", url="https://ruetcse24.vercel.app/profiles")],
                 [InlineKeyboardButton("Cancel", callback_data="cancel")]
             ]
