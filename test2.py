@@ -16,3 +16,4 @@ for col in collections:
     
     target[col].insert_many(data)
     print(f"Copied {len(data)} documents of {col}")
+#herrlo
