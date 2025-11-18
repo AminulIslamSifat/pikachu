@@ -83,7 +83,7 @@ async def main():
         await db_utils.populate_db_caches()                 #Loading all data into ram
 
         TOKENs = await db_utils.get_token()                   #getting the bot token
-        TOKEN = TOKENs[2]
+        TOKEN = TOKENs[1]
 
         #Initializing the main telegram bot application
         bot_app = ApplicationBuilder().token(TOKEN).request(tg_request).concurrent_updates(True).build()
